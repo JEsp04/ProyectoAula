@@ -78,6 +78,28 @@ class Usuario:
                 }
             }
         return resumen
+    
+    def Alertas (self):
+        alertas = []
+
+        if self.ingreso_mensual > 0:
+            porcentaje_gasto = (self.gastosMensuales / self.ingreso_mensual) * 100
+            if porcentaje_gasto >= 90:
+                alertas.append("Alerta: Ha gastado más del 90% de su ingreso mensual.")
+            elif porcentaje_gasto >= 80:
+                alertas.append("Alerta: Ha gastado más del 80% de su ingreso mensual.")
+        
+        for nombre, categoria in [("Alimentación", self.alimentacion), 
+                              ("Transporte", self.transporte),
+                              ("Hogar", self.hogar),
+                              ("Otros", self.otros)]:
+            if categoria.presupuestoInicial > 0:
+                porcentaje_categoria = (categoria.gastos / categoria.presupuestoInicial) * 100
+                if porcentaje_categoria >= 90:
+                    alertas.append(f"Alerta: Ha gastado más del 90% de su presupuesto en {nombre}.")
+                elif porcentaje_categoria >= 80:
+                    alertas.append(f"Alerta: Ha gastado más del 80% de su presupuesto en {nombre}.")
+        return alertas
 
 import json
 
