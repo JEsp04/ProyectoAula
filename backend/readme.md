@@ -1,1 +1,0 @@
-Creacion de clases y metodos iniciales de usuario y categorias e impresion de todos los usuarios en archivo JSON 
