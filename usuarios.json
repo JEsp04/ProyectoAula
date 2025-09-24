@@ -1,0 +1,112 @@
+[
+    {
+        "Nombre": "jhojan",
+        "Ingreso Mensual": 1000.0,
+        "Saldo Restante": 150.0,
+        "Gastos Mensuales": 800.0,
+        "Categorias": {
+            "Alimentacion": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            },
+            "Transporte": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            },
+            "Hogar": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            },
+            "Otros": {
+                "Presupuesto Mensual": 850.0,
+                "Gastos Mensuales": 800.0,
+                "Saldo Restante": 50.0,
+                "Movimientos": [
+                    {
+                        "id": "aaf3d88c-a5f3-4aff-95ad-0380389c2cc7",
+                        "categoria": "Otros",
+                        "monto": 800.0,
+                        "descripcion": "putas",
+                        "fecha": "2025-09-24 11:45:30"
+                    }
+                ]
+            }
+        },
+        "Alertas": [
+            "Alerta: Ha gastado el 80.00% de su ingreso mensual.",
+            "Alerta: Ha gastado el 94.12% de su presupuesto en Otros."
+        ]
+    },
+    {
+        "Nombre": "geronimo",
+        "Ingreso Mensual": 2000.0,
+        "Saldo Restante": 1000.0,
+        "Gastos Mensuales": 0,
+        "Categorias": {
+            "Alimentacion": {
+                "Presupuesto Mensual": 1000.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 1000.0,
+                "Movimientos": []
+            },
+            "Transporte": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            },
+            "Hogar": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            },
+            "Otros": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            }
+        },
+        "Alertas": []
+    },
+    {
+        "Nombre": "loaiza",
+        "Ingreso Mensual": 3000.0,
+        "Saldo Restante": 3000.0,
+        "Gastos Mensuales": 0,
+        "Categorias": {
+            "Alimentacion": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            },
+            "Transporte": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            },
+            "Hogar": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            },
+            "Otros": {
+                "Presupuesto Mensual": 0.0,
+                "Gastos Mensuales": 0,
+                "Saldo Restante": 0.0,
+                "Movimientos": []
+            }
+        },
+        "Alertas": []
+    }
+]

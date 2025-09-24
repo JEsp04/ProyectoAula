@@ -1,7 +1,7 @@
 import json
 from usuario.usuario import Usuario
 usuarios = []
-def menu_principal():
+def menu_principal(usuarios):
     while True:
         print("\nMenú Principal:")
         print("1. Crear usuario")
@@ -9,22 +9,22 @@ def menu_principal():
         print("3. Salir")
         opcion = input("Elija una opción: ")
         if opcion == '1':
-            crear_usuario()
+            crear_usuario(usuarios)
         elif opcion == '2':
-            seleccionar_usuario()
+            seleccionar_usuario(usuarios)
         elif opcion == '3':
             break
         else:
             print("Opción inválida, intente de nuevo.")
 
-def crear_usuario():
+def crear_usuario(usuarios):
         nombre = input("Ingrese el nombre del usuario: ")
         ingreso = float(input("Ingrese el ingreso mensual: "))
         usuario = Usuario(nombre, ingreso)
         usuarios.append(usuario)
         print(f"Usuario '{nombre}' creado con éxito.\n")
 
-def seleccionar_usuario():
+def seleccionar_usuario(usuarios):
     if not usuarios:
         print("No hay usuarios disponibles. Cree uno primero.")
         return
@@ -49,7 +49,8 @@ def menu_usuario(usuario):
         print("2. Registrar gasto")
         print("3. Ver resumen")
         print("4. Ver historial de gastos")
-        print("5. Volver al menú principal")
+        print("5. Deshacer último gasto")
+        print("6. Volver al menú principal")
         opcion = int(input("Elija una opción: "))
         if opcion == 1:
             asignar_presupuesto(usuario)
@@ -60,6 +61,8 @@ def menu_usuario(usuario):
         elif opcion == 4:
             print(json.dumps(usuario.obtener_historial(), indent=4, ensure_ascii=False))
         elif opcion == 5:
+                usuario.deshacer_ultimo_gasto()
+        elif opcion == 6:
             break
         else:
             print("Opción inválida, intente de nuevo.")
