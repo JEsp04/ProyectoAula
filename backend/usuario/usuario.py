@@ -13,6 +13,7 @@ class Usuario:
         self.hogar = Hogar()
         self.otros = Otros()
         self.historial = []
+        self.pila = []
 
     def asignar_presupuesto(self, categoria, monto):
         monto = float(monto)
@@ -45,6 +46,7 @@ class Usuario:
         categoria.movimientos.append(movimiento)
         self.historial.append(movimiento)
         
+        self.pila.append(("gasto", categoria, monto, movimiento))
         return movimiento
     
     def obtener_historial(self):
@@ -111,6 +113,32 @@ class Usuario:
             if categoria.presupuestoInicial > 0:
                 porcentaje_categoria = (categoria.gastos / categoria.presupuestoInicial) * 100
                 if porcentaje_categoria >= 80:
-                    alertas.append(f"Alerta: Ha gastado el {porcentaje_categoria}% de su presupuesto en {nombre}.")
+                    alertas.append(f"Alerta: Ha gastado el {porcentaje_categoria:.2f}% del presupuesto asignado para la categoría {nombre}.")
         return alertas
     
+    def deshacer_ultimo_gasto(self):
+        if not self.pila:
+            raise Exception("No hay gastos para deshacer")
+        
+        _, categoria, monto, movimiento = self.pila[-1]
+        print("\nÚltimo gasto registrado:")
+        print(f"Categoría: {categoria.nombre}")
+        print(f"Monto: {monto}")
+        print(f"Descripción: {movimiento['descripcion']}")
+        print(f"Fecha: {movimiento['fecha']}")
+        
+        confirmar = input("¿Desea deshacer este gasto? (s/n): ").lower().strip()
+        if confirmar != 's':
+            print("Operación cancelada.")
+            return
+        
+        _, categoria, monto, movimiento = self.pila.pop()        
+        categoria.gastos -= monto
+        categoria.saldoRestante += monto
+        self.gastosMensuales -= monto
+        
+        categoria.movimientos.remove(movimiento)
+        self.historial.remove(movimiento)
+        
+        print("Último gasto deshecho con éxito.")
+        
