@@ -47,7 +47,7 @@ Crear y activar entorno virtual en la raíz del repo:
 <img width="742" height="89" alt="image" src="https://github.com/user-attachments/assets/91b7ecb3-c38f-4b17-838e-001bdb7a62c1" />
 
 
-bash
+
 <img width="751" height="100" alt="image" src="https://github.com/user-attachments/assets/edffd945-efc1-4d50-ab59-450a595e7412" />
 
 Ejecución
@@ -77,12 +77,12 @@ cargar_usuarios: reconstruye usuarios y sus categorías y vuelve a aplicar los m
 Pruebas unitarias (pytest)
 Ejecutar toda la suite:
 
-bash
+
 <img width="751" height="71" alt="image" src="https://github.com/user-attachments/assets/f6debf4d-5f85-41b9-8178-89ad1040c3e0" />
 
 Ejecutar por archivo o patrón:
 
-bash
+
 <img width="750" height="96" alt="image" src="https://github.com/user-attachments/assets/a3a34f41-4451-47de-9ec5-2d662aaefb8c" />
 
 Qué valida la suite:
