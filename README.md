@@ -44,19 +44,17 @@ pytest para ejecutar pruebas.
 Instalación
 Crear y activar entorno virtual en la raíz del repo:
 
-bash
-python -m venv .venv
-source .venv/Scripts/activate || . .venv/Scripts/activate
-Instalar dependencias de pruebas:
+<img width="742" height="89" alt="image" src="https://github.com/user-attachments/assets/91b7ecb3-c38f-4b17-838e-001bdb7a62c1" />
+
 
 bash
-python -m pip install -U pip pytest
-pytest --version
+<img width="751" height="100" alt="image" src="https://github.com/user-attachments/assets/edffd945-efc1-4d50-ab59-450a595e7412" />
+
 Ejecución
 Iniciar la aplicación por consola:
 
-bash
-python backend/main.py
+<img width="740" height="70" alt="image" src="https://github.com/user-attachments/assets/062003a1-9fa1-433b-9c18-5a89bbb505b6" />
+
 Seguir el menú para:
 
 Crear usuario y definir ingreso mensual.
@@ -80,12 +78,13 @@ Pruebas unitarias (pytest)
 Ejecutar toda la suite:
 
 bash
-pytest -q
+<img width="751" height="71" alt="image" src="https://github.com/user-attachments/assets/f6debf4d-5f85-41b9-8178-89ad1040c3e0" />
+
 Ejecutar por archivo o patrón:
 
 bash
-pytest tests/test_storage.py -q
-pytest -k "usuario and not delete" -q
+<img width="750" height="96" alt="image" src="https://github.com/user-attachments/assets/a3a34f41-4451-47de-9ec5-2d662aaefb8c" />
+
 Qué valida la suite:
 
 test_smoke.py: entorno de pruebas operativo.
