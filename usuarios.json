@@ -1,112 +1,80 @@
 [
     {
-        "Nombre": "jhojan",
-        "Ingreso Mensual": 1000.0,
-        "Saldo Restante": 150.0,
-        "Gastos Mensuales": 800.0,
-        "Categorias": {
-            "Alimentacion": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
+        "nombre": "Jhojan",
+        "email": "jhojan.espinosaa@comunidad.iush.edu.com",
+        "password_hash": "$2b$12$DdOmJy5IjVJx8SA1iV77FOycgziWIcCaHPDlcuVwf.cZ/WkWcgPI.",
+        "ingreso_mensual": 1200000.0,
+        "saldoRestante": 1200000.0,
+        "gastosMensuales": 0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Alimentacion"
             },
-            "Transporte": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
             },
-            "Hogar": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
             },
-            "Otros": {
-                "Presupuesto Mensual": 850.0,
-                "Gastos Mensuales": 800.0,
-                "Saldo Restante": 50.0,
-                "Movimientos": [
-                    {
-                        "id": "aaf3d88c-a5f3-4aff-95ad-0380389c2cc7",
-                        "categoria": "Otros",
-                        "monto": 800.0,
-                        "descripcion": "putas",
-                        "fecha": "2025-09-24 11:45:30"
-                    }
-                ]
+            "otros": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Otros"
             }
         },
-        "Alertas": [
-            "Alerta: Ha gastado el 80.00% de su ingreso mensual.",
-            "Alerta: Ha gastado el 94.12% de su presupuesto en Otros."
-        ]
+        "historial": []
     },
     {
-        "Nombre": "geronimo",
-        "Ingreso Mensual": 2000.0,
-        "Saldo Restante": 1000.0,
-        "Gastos Mensuales": 0,
-        "Categorias": {
-            "Alimentacion": {
-                "Presupuesto Mensual": 1000.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 1000.0,
-                "Movimientos": []
+        "nombre": "Valderrama",
+        "email": "valderrama@comunidad.iush.edu.com",
+        "password_hash": "$2b$12$cWx12Fr01PyyH/wkCcbjGe0CfqCxwaNlZ7s7o6jtZPEGbcArAbi8K",
+        "ingreso_mensual": 1200000.0,
+        "saldoRestante": 1200000.0,
+        "gastosMensuales": 0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Alimentacion"
             },
-            "Transporte": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
             },
-            "Hogar": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
             },
-            "Otros": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
+            "otros": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Otros"
             }
         },
-        "Alertas": []
-    },
-    {
-        "Nombre": "loaiza",
-        "Ingreso Mensual": 3000.0,
-        "Saldo Restante": 3000.0,
-        "Gastos Mensuales": 0,
-        "Categorias": {
-            "Alimentacion": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
-            },
-            "Transporte": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
-            },
-            "Hogar": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
-            },
-            "Otros": {
-                "Presupuesto Mensual": 0.0,
-                "Gastos Mensuales": 0,
-                "Saldo Restante": 0.0,
-                "Movimientos": []
-            }
-        },
-        "Alertas": []
+        "historial": []
     }
 ]
