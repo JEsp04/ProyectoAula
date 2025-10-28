@@ -1,14 +1,20 @@
 import uuid # para generar IDs únicas para los movimientos
 from datetime import datetime # para manejar fechas y horas
-from categorias import Alimentacion, Transporte, Hogar, Otros # importamos las categorias
+from backend.models.categorias import Alimentacion, Transporte, Hogar, Otros # importamos las categorias
+from hashlib import sha256  # para hashear contraseñas
+import bcrypt
 class Usuario:
     # clase que representa a un usuario con sus categorias, presupuestos y gastos
-    def __init__(self, nombre, ingreso_mensual):
+    def __init__(self, nombre, email, ingreso_mensual, password_hash=None):
         self.nombre = nombre
+        self.email = email
         self.ingreso_mensual = float(ingreso_mensual)
         self.saldoRestante = float(ingreso_mensual)
         self.gastosMensuales = 0
         
+        self.password_hash = password_hash
+        
+        # Categorías
         self.alimentacion = Alimentacion()
         self.transporte = Transporte()
         self.hogar = Hogar()
@@ -16,6 +22,15 @@ class Usuario:
         self.historial = [] # historial de todos los movimientos del usuario
         self.pila = [] # pila para deshacer acciones como el ultimo gasto registrado
 
+    def set_password(self, password: str):
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        self.password_hash = hashed.decode('utf-8')
+
+    def check_password(self, password: str) -> bool:
+        if self.password_hash is None:
+            return False
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+    
     def asignar_presupuesto(self, categoria, monto):
         # asigna un presupuesto a una categoria especifica del usuario
         monto = float(monto)
@@ -71,6 +86,8 @@ class Usuario:
         # devuelve un resumen del usuario con sus categorias, presupuestos, gastos, movimientos y alertas
         resumen = {
             "Nombre": self.nombre,
+            "Email": self.email,
+            "Password": self.password_hash,
             "Ingreso Mensual": self.ingreso_mensual,
             "Saldo Restante": self.saldoRestante,
             "Gastos Mensuales": self.gastosMensuales,
@@ -124,31 +141,17 @@ class Usuario:
         return alertas
     
     def deshacer_ultimo_gasto(self):
-        # deshace el ultimo gasto registrado por el usuario
-        # muestra los detalles del ultimo gasto y pide confirmacion antes de eliminarlo
-        # si confirma, el gasto se elimina del historial y se actualizan los totales
         if not self.pila:
             raise Exception("No hay gastos para deshacer")
         
-        _, categoria, monto, movimiento = self.pila[-1] # obtenemos el ultimo gasto sin eliminarlo aun
-        print("\nÚltimo gasto registrado:")
-        print(f"Categoría: {categoria.nombre}")
-        print(f"Monto: {monto}")
-        print(f"Descripción: {movimiento['descripcion']}")
-        print(f"Fecha: {movimiento['fecha']}")
-        
-        confirmar = input("¿Desea deshacer este gasto? (s/n): ").lower().strip() # pedimos confirmacion al usuario
-        if confirmar != 's':
-            print("Operación cancelada.")
-            return
-        
-        _, categoria, monto, movimiento = self.pila.pop() # eliminamos el ultimo gasto de la pila     
+        _, categoria, monto, movimiento = self.pila.pop()
+
         categoria.gastos -= monto
         categoria.saldoRestante += monto
         self.gastosMensuales -= monto
-        
-        categoria.movimientos.remove(movimiento) # eliminamos el movimiento del historial de la categoria
-        self.historial.remove(movimiento) # eliminamos el movimiento del historial global del usuario
-        
-        print("Último gasto deshecho con éxito.")
+
+        categoria.movimientos.remove(movimiento)
+        self.historial.remove(movimiento)
+
+        return movimiento 
         
