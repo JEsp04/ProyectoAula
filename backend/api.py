@@ -57,12 +57,8 @@ def login(data: UsuarioLogin):
     """Verifica credenciales de usuario"""
     try:
         usuario = ctrl.buscar_por_email(data.email)
-        if not usuario:
-            raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-        # Comprobación segura del password
-        if not usuario.check_password(data.password):
-            raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+        if not usuario or not usuario.check_password(data.password):
+            raise HTTPException(status_code=401, detail="Credenciales incorrectas")
 
         return {"message": "Inicio de sesión exitoso", "usuario": usuario.obtener_resumen()}
 

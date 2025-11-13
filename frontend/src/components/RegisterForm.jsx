@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useUserStore } from "../store/userStore";
+import { useAuthStore } from "../store/useAuthStore";
 
 const RegisterForm = () => {
-  const { register } = useUserStore();
+  const { register } = useAuthStore();
   const [form, setForm] = useState({ name: "", email: "", income: "", password: "" });
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });

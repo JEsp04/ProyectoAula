@@ -2,22 +2,37 @@ import { create } from "zustand";
 import { loginUser, registerUser } from "../services/authService";
 
 export const useAuthStore = create((set) => ({
-  user: null,
-  isAuthenticated: false,
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  token: localStorage.getItem("token") || null,
+  isAuthenticated: !!localStorage.getItem("token"),
   loading: false,
   error: null,
 
   login: async (credentials) => {
-    set({ loading: true, error: null }); // Limpiar errores previos
+    set({ loading: true, error: null });
+
     try {
       const res = await loginUser(credentials);
-      // Guardar el usuario y limpiar cualquier error previo
-      set({ user: res.usuario, isAuthenticated: true, error: null });
+
+      const { usuario, token } = res;
+
+      // Guardar token y usuario en localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(usuario));
+
+      // Actualizar estado
+      set({
+        user: usuario,
+        token,
+        isAuthenticated: true,
+        error: null,
+      });
+
       return res;
     } catch (err) {
       const errorMessage = err.response?.data?.detail || "Error al iniciar sesión";
-      set({ error: errorMessage }); // Guardar el error en el estado
-      throw new Error(errorMessage); // Lanzar el error para que el componente lo capture
+      set({ error: errorMessage, isAuthenticated: false });
+      throw new Error(errorMessage);
     } finally {
       set({ loading: false });
     }
@@ -27,7 +42,12 @@ export const useAuthStore = create((set) => ({
     set({ loading: true });
     try {
       const res = await registerUser(data);
-      set({ user: res.usuario, isAuthenticated: true });
+      const { usuario, token } = res;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(usuario));
+
+      set({ user: usuario, token, isAuthenticated: true });
       return res;
     } catch (err) {
       throw err.response?.data?.detail || "Error al registrar usuario";
@@ -36,5 +56,9 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  logout: () => set({ user: null, isAuthenticated: false }),
+  logout: () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    set({ user: null, token: null, isAuthenticated: false });
+  },
 }));
