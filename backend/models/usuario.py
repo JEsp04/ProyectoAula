@@ -85,40 +85,39 @@ class Usuario:
     def obtener_resumen(self):
         # devuelve un resumen del usuario con sus categorias, presupuestos, gastos, movimientos y alertas
         resumen = {
-            "Nombre": self.nombre,
-            "Email": self.email,
-            "Password": self.password_hash,
-            "Ingreso Mensual": self.ingreso_mensual,
-            "Saldo Restante": self.saldoRestante,
-            "Gastos Mensuales": self.gastosMensuales,
-            "Categorias": {
-                "Alimentacion": {
-                    "Presupuesto Mensual": self.alimentacion.presupuestoInicial,
-                    "Gastos Mensuales": self.alimentacion.gastos,
-                    "Saldo Restante": self.alimentacion.saldoRestante,
-                    "Movimientos": self.obtener_resumen_categoria(self.alimentacion)
+            "nombre": self.nombre,
+            "email": self.email,
+            "ingreso": self.ingreso_mensual,
+            "saldoRestante": self.saldoRestante,
+            "gastosMensuales": self.gastosMensuales,
+            "categorias": {
+                "alimentacion": {
+                    "presupuestoMensual": self.alimentacion.presupuestoInicial,
+                    "gastosMensuales": self.alimentacion.gastos,
+                    "saldoRestante": self.alimentacion.saldoRestante,
+                    "movimientos": self.obtener_resumen_categoria(self.alimentacion)
                 },
-                "Transporte": {
-                    "Presupuesto Mensual": self.transporte.presupuestoInicial,
-                    "Gastos Mensuales": self.transporte.gastos,
-                    "Saldo Restante": self.transporte.saldoRestante,
-                    "Movimientos": self.obtener_resumen_categoria(self.transporte)
+                "transporte": {
+                    "presupuestoMensual": self.transporte.presupuestoInicial,
+                    "gastosMensuales": self.transporte.gastos,
+                    "saldoRestante": self.transporte.saldoRestante,
+                    "movimientos": self.obtener_resumen_categoria(self.transporte)
                 },
-                "Hogar": {
-                    "Presupuesto Mensual": self.hogar.presupuestoInicial,
-                    "Gastos Mensuales": self.hogar.gastos,
-                    "Saldo Restante": self.hogar.saldoRestante,
-                    "Movimientos": self.obtener_resumen_categoria(self.hogar)
+                "hogar": {
+                    "presupuestoMensual": self.hogar.presupuestoInicial,
+                    "gastosMensuales": self.hogar.gastos,
+                    "saldoRestante": self.hogar.saldoRestante,
+                    "movimientos": self.obtener_resumen_categoria(self.hogar)
                 },
-                "Otros": {
-                    "Presupuesto Mensual": self.otros.presupuestoInicial,
-                    "Gastos Mensuales": self.otros.gastos,
-                    "Saldo Restante": self.otros.saldoRestante,
-                    "Movimientos": self.obtener_resumen_categoria(self.otros)
+                "otros": {
+                    "presupuestoMensual": self.otros.presupuestoInicial,
+                    "gastosMensuales": self.otros.gastos,
+                    "saldoRestante": self.otros.saldoRestante,
+                    "movimientos": self.obtener_resumen_categoria(self.otros)
                 },
-                },
-            "Alertas": self.Alertas()
-            }
+            },
+            "alertas": self.Alertas()
+        }
         return resumen
     
     def Alertas (self):

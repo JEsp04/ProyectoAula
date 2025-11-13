@@ -28,8 +28,12 @@ def guardar_usuarios(usuarios, archivo=ARCHIVO_USUARIOS):
         })
         
         # guardamos el diccionario en un archivo JSON
-    with open(archivo, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+    try:
+        with open(archivo, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+        print(f"Usuario(s) guardado(s) correctamente en {archivo}")
+    except Exception as e:
+        print(f"Error al guardar usuarios: {e}")
 
 def cargar_usuarios(archivo="usuarios.json"):
     # carga la informacion de los usuarios desde un archivo JSON en el que se almaceno previamente
@@ -40,28 +44,44 @@ def cargar_usuarios(archivo="usuarios.json"):
     try:
         with open(archivo, "r", encoding="utf-8") as f:
             data = json.load(f)
-            for u in data:
-                usuario = Usuario(
-                    nombre=u["nombre"],
-                    email=u["email"],
-                    ingreso_mensual=u["ingreso_mensual"],
-                    password_hash=u["password_hash"]
-                )
 
-                # restauramos estado financiero
-                usuario.saldoRestante = u["saldoRestante"]
-                usuario.gastosMensuales = u["gastosMensuales"]
+        for u in data:
+            usuario = Usuario(
+                nombre=u["nombre"],
+                email=u["email"],
+                ingreso_mensual=u.get("ingreso_mensual", 0.0),
+                password_hash=u.get("password_hash", "")
+            )
 
-                # restaurar movimientos en categorías
-                usuario.alimentacion.__dict__.update(u["categorias"]["alimentacion"])
-                usuario.transporte.__dict__.update(u["categorias"]["transporte"])
-                usuario.hogar.__dict__.update(u["categorias"]["hogar"])
-                usuario.otros.__dict__.update(u["categorias"]["otros"])
+            # Restaurar estado financiero
+            usuario.saldoRestante = u.get("saldoRestante", 0.0)
+            usuario.gastosMensuales = u.get("gastosMensuales", 0.0)
 
-                # historial general
-                usuario.historial = u["historial"]
+            # Restaurar categorías (si no existen, crear nuevas)
+            usuario.alimentacion = Alimentacion()
+            usuario.alimentacion.__dict__.update(u["categorias"].get("alimentacion", {}))
 
-                usuarios.append(usuario)
+            usuario.transporte = Transporte()
+            usuario.transporte.__dict__.update(u["categorias"].get("transporte", {}))
+
+            usuario.hogar = Hogar()
+            usuario.hogar.__dict__.update(u["categorias"].get("hogar", {}))
+
+            usuario.otros = Otros()
+            usuario.otros.__dict__.update(u["categorias"].get("otros", {}))
+
+            # Restaurar historial (si existe)
+            usuario.historial = u.get("historial", [])
+
+            usuarios.append(usuario)
+
+        print(f"usuario(s) cargado(s) desde {archivo}")
+
     except FileNotFoundError:
-        pass
+        print(f"Archivo {archivo} no encontrado. Se iniciará con lista vacía.")
+    except json.JSONDecodeError:
+        print(f"Error: el archivo {archivo} está corrupto o tiene formato inválido.")
+    except Exception as e:
+        print(f"Error inesperado al cargar usuarios: {e}")
+
     return usuarios

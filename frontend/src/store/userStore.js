@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 // Define la URL base de tu API. Ajústala si es diferente.
-const API_URL = 'http://127.0.0.1:5000';
+const API_URL = 'http://127.0.0.1:8000';
 
 export const useUserStore = create((set) => ({
   user: null,
