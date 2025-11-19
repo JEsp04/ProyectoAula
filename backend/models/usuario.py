@@ -38,6 +38,7 @@ class Usuario:
             categoria.presupuestoInicial = monto
             categoria.saldoRestante = monto
             self.saldoRestante -= monto
+            
         else:
             raise Exception("Monto invalido para el presupuesto (supera saldo de la categoria)")
         
