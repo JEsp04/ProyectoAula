@@ -47,3 +47,30 @@ class UsuarioController:
             raise Exception("Contraseña incorrecta.")
 
         return usuario
+
+    def actualizar_ingreso(self, email: str, nuevo_ingreso: float):
+        """Actualiza el ingreso mensual de un usuario"""
+        usuario = self.buscar_por_email(email)
+        if not usuario:
+            raise Exception("Usuario no encontrado.")
+        
+        if nuevo_ingreso <= 0:
+            raise Exception("El ingreso mensual debe ser mayor a cero.")
+
+        usuario.ingreso_mensual = nuevo_ingreso
+        return usuario
+
+    def asignar_presupuesto(self, email: str, categoria_nombre: str, monto: float):
+        """Asigna un presupuesto a una categoría para un usuario"""
+        usuario = self.buscar_por_email(email)
+        if not usuario:
+            raise Exception("Usuario no encontrado.")
+
+        # Asume que las categorías tienen nombres de atributos como 'alimentacion', 'transporte', etc.
+        categoria_attr = categoria_nombre.lower()
+        if hasattr(usuario, categoria_attr):
+            categoria_obj = getattr(usuario, categoria_attr)
+            usuario.asignar_presupuesto(categoria_obj, monto)
+            return usuario
+        else:
+            raise Exception(f"Categoría '{categoria_nombre}' no válida.")

@@ -4,8 +4,8 @@
         "email": "jhojan@example.com",
         "password_hash": "$2b$12$zUZPUdXuetoKcCOxw0dMD.L30DhCabLq2SY4QnEzDUCAgt25vQCGe",
         "ingreso_mensual": 2500000.0,
-        "saldoRestante": 1700000.0,
-        "gastosMensuales": 600000.0,
+        "saldoRestante": 300000.0,
+        "gastosMensuales": 720000.0,
         "categorias": {
             "alimentacion": {
                 "presupuestoInicial": 800000.0,
@@ -30,15 +30,23 @@
                 "nombre": "Alimentacion"
             },
             "transporte": {
-                "presupuestoInicial": 0,
-                "saldoRestante": 0,
-                "gastos": 0,
-                "movimientos": [],
+                "presupuestoInicial": 200000.0,
+                "saldoRestante": 80000.0,
+                "gastos": 120000.0,
+                "movimientos": [
+                    {
+                        "id": "549995d2-2112-4df5-ba6d-626cc99d1bd5",
+                        "categoria": "Transporte",
+                        "monto": 120000.0,
+                        "descripcion": "Recarga Cívica",
+                        "fecha": "2025-11-18 18:51:07"
+                    }
+                ],
                 "nombre": "Transporte"
             },
             "hogar": {
-                "presupuestoInicial": 0,
-                "saldoRestante": 0,
+                "presupuestoInicial": 1200000.0,
+                "saldoRestante": 1200000.0,
                 "gastos": 0,
                 "movimientos": [],
                 "nombre": "Hogar"
@@ -65,7 +73,131 @@
                 "monto": 300000.0,
                 "descripcion": "Carne",
                 "fecha": "2025-11-13 12:07:17"
+            },
+            {
+                "id": "549995d2-2112-4df5-ba6d-626cc99d1bd5",
+                "categoria": "Transporte",
+                "monto": 120000.0,
+                "descripcion": "Recarga Cívica",
+                "fecha": "2025-11-18 18:51:07"
             }
         ]
+    },
+    {
+        "nombre": "Geronimo Valderrama",
+        "email": "geronimo@example.com",
+        "password_hash": "$2b$12$Snf/W5MKsSLWZBZeH5DSN.mcSjAjGkX18oDhunF/OlFnaC0LsfQaa",
+        "ingreso_mensual": 1250000.0,
+        "saldoRestante": 1250000.0,
+        "gastosMensuales": 0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Alimentacion"
+            },
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
+            },
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
+            },
+            "otros": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Otros"
+            }
+        },
+        "historial": []
+    },
+    {
+        "nombre": "Juan Loaiza",
+        "email": "loaiza@example.com",
+        "password_hash": "$2b$12$HPMV/XOiJxF60FjL5S78t.3d27jhzXMlg.oAnKD3vlYR1O2VRSCry",
+        "ingreso_mensual": 1950000.0,
+        "saldoRestante": 1950000.0,
+        "gastosMensuales": 0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Alimentacion"
+            },
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
+            },
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
+            },
+            "otros": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Otros"
+            }
+        },
+        "historial": []
+    },
+    {
+        "nombre": "Juan Munera",
+        "email": "munera@example.com",
+        "password_hash": "$2b$12$ShsVsFKxlVnAopFq5qcXTu2WZE3sUwjsWUrWYFDVvrK/9hpvB657.",
+        "ingreso_mensual": 1950000.0,
+        "saldoRestante": 1950000.0,
+        "gastosMensuales": 0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Alimentacion"
+            },
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
+            },
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
+            },
+            "otros": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Otros"
+            }
+        },
+        "historial": []
     }
 ]

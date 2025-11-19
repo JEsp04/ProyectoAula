@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // 1. Importar useNavigate para la redirección
 import { useAuthStore } from "../store/useAuthStore";
 
 const LoginForm = () => {
+  useEffect(() => {
+  useAuthStore.getState().logout();
+}, []);
   // 2. Obtener loading y error del store
-   const login = useAuthStore((state) => state.login);
+  const login = useAuthStore((state) => state.login);
   const loading = useAuthStore((state) => state.loading);
   const error = useAuthStore((state) => state.error);
-  
+
+
+
   const navigate = useNavigate(); // 3. Inicializar el hook de navegación
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import DashboardPage from "./pages/DashboardPage"; // 1. Importar la nueva página
+import FinanzasPage from "./pages/FinanzasPage"; // 1. Importar la nueva página
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/dashboard" element={<DashboardPage />} /> {/* 2. Añadir la ruta del dashboard */}
+      <Route path="/dashboard" element={<FinanzasPage />} /> {/* 2. Añadir la ruta del dashboard */}
     </Routes>
   );
 }

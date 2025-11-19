@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr, Field
 class UsuarioCreate(BaseModel):
     nombre: str = Field(..., min_length=2, description="Nombre del usuario")
     email: EmailStr
-    ingreso: float = Field(..., description="Ingreso mensual del usuario")
+    ingreso_mensual: float = Field(..., description="Ingreso mensual del usuario")
     password: str = Field(..., min_length=6, description="Contraseña en texto plano (será hasheada)")
 
 class UsuarioLogin(BaseModel):
@@ -12,6 +12,9 @@ class UsuarioLogin(BaseModel):
 
     class Config:
         orm_mode = True
+
+class UsuarioUpdateIngreso(BaseModel):
+    ingreso_mensual: float = Field(..., gt=0, description="Nuevo ingreso mensual del usuario")
 
 
 class PresupuestoAsignar(BaseModel):
