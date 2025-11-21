@@ -1,61 +1,58 @@
 import { useState } from "react";
-import { CATEGORIAS } from "../utils/categorias";
-import { useExpenseStore } from "../store/useExpenseStore";
 
-export default function ExpenseForm() {
+export default function GastoForm({ onAdd }) {
   const [nombre, setNombre] = useState("");
+  const [categoria, setCategoria] = useState("Alimentacion");
   const [monto, setMonto] = useState("");
-  const [categoria, setCategoria] = useState(CATEGORIAS[0]);
-  const addExpense = useExpenseStore((state) => state.addExpense);
 
-  const handleSubmit = async (e) => {
+  const enviar = (e) => {
     e.preventDefault();
-    if (!nombre || !monto) return alert("Ingresa todos los datos");
 
-    try {
-      await addExpense({
-        nombre,
-        monto: Number(monto),
-        categoria,
-      });
-      // Limpiar el formulario en caso de éxito
-      setNombre("");
-      setMonto("");
-    } catch (error) {
-      alert("Error al añadir el gasto. Inténtalo de nuevo.");
-    }
+    onAdd({
+      descripcion: nombre,
+      categoria,
+      monto: Number(monto),
+    });
 
     setNombre("");
     setMonto("");
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 shadow-lg rounded-lg transition-colors duration-300">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Añadir Gasto</h2>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-4">Registrar Gasto</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={enviar}>
+        <select
+          value={categoria}
+          onChange={(e) => setCategoria(e.target.value)}
+          className="w-full p-2 border rounded mb-4"
+        >
+          <option>Alimentacion</option>
+          <option>Transporte</option>
+          <option>Hogar</option>
+          <option>Otros</option>
+        </select>
+
         <input
+          type="text"
           placeholder="Nombre del gasto"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded w-full p-3 focus:ring-2 focus:ring-blue-500 outline-none transition"
+          className="w-full p-2 border rounded mb-4"
         />
-
+        
         <input
           type="number"
           placeholder="Monto"
           value={monto}
           onChange={(e) => setMonto(e.target.value)}
-          className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded w-full p-3 focus:ring-2 focus:ring-blue-500 outline-none transition"
+          className="w-full p-2 border rounded mb-4"
         />
 
-        <select value={categoria} onChange={(e) => setCategoria(e.target.value)} className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded w-full p-3 focus:ring-2 focus:ring-blue-500 outline-none transition">
-          {CATEGORIAS.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
-
-        <button type="submit" className="bg-[#4F46E5] text-white font-bold py-3 px-4 rounded-lg w-full hover:bg-blue-600 transition-colors duration-300 shadow-md">Añadir Gasto</button>
+        <button className="w-full bg-indigo-600 text-white py-2 rounded">
+          Añadir Gasto
+        </button>
       </form>
     </div>
   );

@@ -154,4 +154,15 @@ class Usuario:
         self.historial.remove(movimiento)
 
         return movimiento 
-        
+    
+    def obtener_gasto_por_id(self, gasto_id):
+        # comparar por string para evitar problemas de tipo (int vs str)
+        target = str(gasto_id)
+        for movimiento in self.historial:
+            try:
+                if str(movimiento.get("id")) == target:
+                    return movimiento
+            except Exception:
+                # seguir buscando si hay estructuras inesperadas
+                continue
+        return None

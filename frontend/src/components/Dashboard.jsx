@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CATEGORIAS } from "../utils/categorias";
-import { PencilIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 export default function Dashboard({
   gastos = [],
@@ -44,7 +44,6 @@ export default function Dashboard({
             <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Ingreso Mensual</h4>
             {!isEditing && (
               <button onClick={() => setIsEditing(true)} className="text-gray-400 hover:text-blue-500 transition-colors">
-                <PencilIcon className="h-4 w-4" />
               </button>
             )}
           </div>

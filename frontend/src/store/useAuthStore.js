@@ -88,54 +88,35 @@ export const useAuthStore = create((set) => ({
   error: null,
 
   login: async (credentials) => {
-    set({ loading: true, error: null });
-    try {
-      const res = await loginUser(credentials);
-      console.log("[useAuthStore.login] login response:", res);
+  set({ loading: true, error: null });
 
-      // backend puede devolver distintos shapes: { usuario, token } o { user, access_token } etc.
-      let usuario = res.usuario || res.user || res.data || null;
-      const token = res.token || res.access_token || res.token_access || res.accessToken || null;
+  try {
+    const res = await loginUser(credentials);
 
-      // si no viene el usuario completo (sin historial o categorias), pedir al endpoint ObtenerPor
-      if (!usuario || (!usuario.historial && !usuario.categorias)) {
-        try {
-          const email = credentials.email || (usuario && usuario.email);
-          if (email) {
-            console.log("[useAuthStore.login] solicitando usuario completo /api/usuarios/ObtenerPor/", email);
-            const full = await api.get(`/usuarios/ObtenerPor/${encodeURIComponent(email)}`);
-            usuario = full.data;
-            console.log("[useAuthStore.login] usuario completo obtenido:", usuario);
-          } else {
-            console.warn("[useAuthStore.login] no hay email para solicitar usuario completo");
-          }
-        } catch (err) {
-          console.warn("[useAuthStore.login] error al pedir usuario completo:", err);
-        }
-      }
+    const usuario = res.usuario || res.user || res.data;
+    const token = res.token || res.access_token;
 
-      // persistir y sincronizar
-      if (token) localStorage.setItem("token", token);
-      if (usuario) localStorage.setItem("user", JSON.stringify(usuario));
-      syncUserDataToLocalStorage(usuario);
+    if (token) localStorage.setItem("token", token);
+    if (usuario) localStorage.setItem("user", JSON.stringify(usuario));
 
-      set({
-        user: usuario || null,
-        token: token || null,
-        isAuthenticated: !!token,
-        error: null,
-      });
+    syncUserDataToLocalStorage(usuario);
 
-      return { usuario, token };
-    } catch (err) {
-      console.error("[useAuthStore.login] error:", err);
-      const msg = err?.response?.data?.detail || err.message || "Error al iniciar sesión";
-      set({ error: msg, isAuthenticated: false });
-      throw new Error(msg);
-    } finally {
-      set({ loading: false });
-    }
-  },
+    set({
+      user: usuario,
+      token,
+      isAuthenticated: true,
+      error: null,
+    });
+
+    return { usuario, token };
+  } catch (err) {
+    const msg = err?.response?.data?.detail || err.message || "Error al iniciar sesión";
+    set({ error: msg, isAuthenticated: false });
+    throw new Error(msg);
+  } finally {
+    set({ loading: false });
+  }
+},
 
   register: async (data) => {
     set({ loading: true, error: null });
