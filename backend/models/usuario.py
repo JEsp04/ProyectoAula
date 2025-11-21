@@ -20,7 +20,6 @@ class Usuario:
         self.hogar = Hogar()
         self.otros = Otros()
         self.historial = [] # historial de todos los movimientos del usuario
-        self.pila = [] # pila para deshacer acciones como el ultimo gasto registrado
 
     def set_password(self, password: str):
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -65,7 +64,7 @@ class Usuario:
         categoria.movimientos.append(movimiento)
         self.historial.append(movimiento)
         # se guarda en la pila para poder deshacer el ultimo gasto si es necesario
-        self.pila.append(("gasto", categoria, monto, movimiento))
+        #self.pila.append(("gasto", categoria, monto, movimiento))
         return movimiento
     
     def obtener_historial(self):
@@ -116,6 +115,7 @@ class Usuario:
                     "saldoRestante": self.otros.saldoRestante,
                     "movimientos": self.obtener_resumen_categoria(self.otros)
                 },
+                "historial": self.obtener_historial()
             },
             "alertas": self.Alertas()
         }
@@ -140,18 +140,75 @@ class Usuario:
                     alertas.append(f"Alerta: Ha gastado el {porcentaje_categoria:.2f}% del presupuesto asignado para la categoría {nombre}.")
         return alertas
     
-    def deshacer_ultimo_gasto(self):
-        if not self.pila:
-            raise Exception("No hay gastos para deshacer")
-        
-        _, categoria, monto, movimiento = self.pila.pop()
+    
+    def obtener_gasto_por_id(self, gasto_id):
+        # comparar por string para evitar problemas de tipo (int vs str)
+        target = str(gasto_id)
+        for movimiento in self.historial:
+            try:
+                if str(movimiento.get("id")) == target:
+                    return movimiento
+            except Exception:
+                # seguir buscando si hay estructuras inesperadas
+                continue
+        return None
 
-        categoria.gastos -= monto
-        categoria.saldoRestante += monto
-        self.gastosMensuales -= monto
+    def eliminar_gasto_por_id(self, gasto_id):
+        """Elimina un gasto por id y ajusta los totales de la categoria y del usuario.
+        Devuelve el movimiento eliminado o None si no se encuentra."""
+        target = str(gasto_id)
+        for movimiento in list(self.historial):
+            try:
+                if str(movimiento.get("id")) != target:
+                    continue
+            except Exception:
+                continue
 
-        categoria.movimientos.remove(movimiento)
-        self.historial.remove(movimiento)
+            # Encontrado: buscar la categoría correspondiente y revertir montos
+            categoria_nombre = movimiento.get("categoria") or movimiento.get("categoria_nombre") or ""
+            categoria_obj = None
+            for cat in [self.alimentacion, self.transporte, self.hogar, self.otros]:
+                try:
+                    if getattr(cat, "nombre", "").lower() == str(categoria_nombre).lower() or cat is getattr(self, categoria_nombre.lower(), None):
+                        categoria_obj = cat
+                        break
+                except Exception:
+                    continue
 
-        return movimiento 
-        
+            monto = float(movimiento.get("monto") or movimiento.get("amount") or 0)
+
+            # Revertir totales si encontramos la categoría
+            if categoria_obj is not None:
+                try:
+                    categoria_obj.gastos -= monto
+                except Exception:
+                    pass
+                try:
+                    categoria_obj.saldoRestante += monto
+                except Exception:
+                    pass
+
+            # Ajustar totales del usuario
+            try:
+                self.gastosMensuales -= monto
+            except Exception:
+                pass
+
+            # Eliminar de listas
+            try:
+                # remover de la categoria.movimientos si existe
+                if categoria_obj and movimiento in getattr(categoria_obj, "movimientos", []):
+                    categoria_obj.movimientos.remove(movimiento)
+            except Exception:
+                pass
+
+            try:
+                if movimiento in self.historial:
+                    self.historial.remove(movimiento)
+            except Exception:
+                pass
+
+
+            return movimiento
+
+        return None

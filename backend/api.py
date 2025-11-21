@@ -71,7 +71,6 @@ def post_usuario(data: UsuarioCreate):
 
 @app.post("/api/usuarios/login")
 def login(data: UsuarioLogin):
-    
     try:
         usuario = ctrl.buscar_por_email(data.email)
         if not usuario or not usuario.check_password(data.password):
@@ -152,3 +151,32 @@ def registrar_gasto(email: str, data: GastoRegistrar):
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@app.delete("/api/usuarios/{email}/gasto/{id}")
+def eliminar_gasto(email: str, id: str):
+    """Elimina un gasto del historial del usuario. El id del gasto puede ser string (uuid)."""
+    usuario = ctrl.buscar_por_email(email)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    try:
+        # usar el método del modelo que revierte totales y elimina el movimiento
+        movimiento = usuario.eliminar_gasto_por_id(id)
+        if not movimiento:
+            try:
+                existing = [m.get("id") for m in usuario.historial]
+            except Exception:
+                existing = []
+            print(f"[eliminar_gasto] id solicitado={id} - ids disponibles={existing}")
+            raise HTTPException(status_code=404, detail="Gasto no encontrado")
+
+        guardar_usuarios(ctrl.usuarios)
+        return {
+            "message": "Gasto eliminado correctamente",
+            "movimiento": movimiento
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
