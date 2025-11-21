@@ -160,24 +160,15 @@ def eliminar_gasto(email: str, id: str):
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
     try:
-        movimiento = usuario.obtener_gasto_por_id(id)
+        # usar el método del modelo que revierte totales y elimina el movimiento
+        movimiento = usuario.eliminar_gasto_por_id(id)
         if not movimiento:
-            # log para depuración: listar ids disponibles
             try:
                 existing = [m.get("id") for m in usuario.historial]
             except Exception:
                 existing = []
             print(f"[eliminar_gasto] id solicitado={id} - ids disponibles={existing}")
             raise HTTPException(status_code=404, detail="Gasto no encontrado")
-
-        usuario.historial.remove(movimiento)
-        # también intentar quitar de la categoría correspondiente si existe
-        for cat in [usuario.alimentacion, usuario.transporte, usuario.hogar, usuario.otros]:
-            try:
-                if movimiento in cat.movimientos:
-                    cat.movimientos.remove(movimiento)
-            except Exception:
-                pass
 
         guardar_usuarios(ctrl.usuarios)
         return {
@@ -189,19 +180,3 @@ def eliminar_gasto(email: str, id: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-@app.delete("/api/usuarios/{email}/gasto/undo")
-def deshacer_ultimo_gasto(email: str):
-    """Deshace el último gasto registrado por el usuario"""
-    usuario = ctrl.buscar_por_email(email)
-    if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-    try:
-        movimiento = usuario.deshacer_ultimo_gasto()
-        guardar_usuarios(ctrl.usuarios)
-        return {
-            "message": "Último gasto deshecho correctamente",
-            "movimiento": movimiento
-        }
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))

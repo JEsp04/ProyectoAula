@@ -1,18 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import ExpenseForm from "../components/GastoForm";
 import BudgetForm from "../components/PresupuestoForm";
 import Dashboard from "../components/Dashboard";
-import { TrashIcon } from "@heroicons/react/24/solid";
+import Notificacion from "../components/Notificacion";
+import { TrashIcon, BellIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useAuthStore } from "../store/useAuthStore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 export default function FinanzasPage() {
-  const { user, updateUser } = useAuthStore();
+  const { user, updateUser, logout, isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
 
   const [gastos, setGastos] = useState([]);
   const [presupuestos, setPresupuestos] = useState({});
+  const [alertas, setAlertas] = useState([]);
+  const [showAlertPanel, setShowAlertPanel] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const prevAlertCount = useRef(0);
 
   useEffect(() => {
     async function loadData() {
@@ -30,7 +37,10 @@ export default function FinanzasPage() {
 
         const categorias = data.categorias || {};
         const pFor = (cat) =>
-          categorias[cat]?.presupuestoInicial ?? categorias[cat]?.presupuesto ?? categorias[cat]?.presupuestoMensual ?? 0;
+          categorias[cat]?.presupuestoInicial ??
+          categorias[cat]?.presupuesto ??
+          categorias[cat]?.presupuestoMensual ??
+          0;
 
         const presupuestosBackend = {
           alimentacion: pFor("alimentacion"),
@@ -61,14 +71,18 @@ export default function FinanzasPage() {
         } else {
           // buscar movimientos dentro de cada categoria
           Object.entries(categorias).forEach(([catKey, catVal]) => {
-            const movimientos = (catVal && (catVal.movimientos || catVal.movimientosMensuales || [])) || [];
+            const movimientos =
+              (catVal &&
+                (catVal.movimientos || catVal.movimientosMensuales || [])) ||
+              [];
             if (!Array.isArray(movimientos)) return;
             movimientos.forEach((m, idx) => {
               gastosList.push({
                 id: m.id ?? m._id ?? `${Date.now()}-${idx}`,
                 nombre: m.descripcion ?? m.nombre ?? m.title ?? "",
                 monto: Number(m.monto ?? m.valor ?? m.amount ?? 0) || 0,
-                categoria: m.categoria ?? m.categoria_nombre ?? catVal.nombre ?? catKey,
+                categoria:
+                  m.categoria ?? m.categoria_nombre ?? catVal.nombre ?? catKey,
                 fecha: m.fecha ?? m.createdAt ?? new Date().toISOString(),
               });
             });
@@ -76,20 +90,54 @@ export default function FinanzasPage() {
 
           // si sigue vacío, leer desde storage
           if (gastosList.length === 0) {
-            const gastosFromStorage = JSON.parse(localStorage.getItem("gastos") || "null");
+            const gastosFromStorage = JSON.parse(
+              localStorage.getItem("gastos") || "null"
+            );
             gastosList = gastosFromStorage ?? [];
           }
         }
 
         // Presupuestos: prefer computed backend -> localStorage
-        const presFromStorage = JSON.parse(localStorage.getItem("presupuestos") || "null");
-        const presFinal =
-          Object.keys(presupuestosBackend).some((k) => presupuestosBackend[k] > 0)
-            ? presupuestosBackend
-            : presFromStorage || presupuestosBackend;
+        const presFromStorage = JSON.parse(
+          localStorage.getItem("presupuestos") || "null"
+        );
+        const presFinal = Object.keys(presupuestosBackend).some(
+          (k) => presupuestosBackend[k] > 0
+        )
+          ? presupuestosBackend
+          : presFromStorage || presupuestosBackend;
 
         setGastos(gastosList);
         setPresupuestos(presFinal || {});
+        // Alertas desde backend (si vienen)
+        try {
+          const dismissed = JSON.parse(
+            localStorage.getItem("dismissedAlertas") || "[]"
+          );
+          const incoming = Array.isArray(data.alertas) ? data.alertas : [];
+          const filtered = incoming.filter((a) => !dismissed.includes(a));
+          // debug
+          try {
+            console.debug(
+              "FinanzasPage - incoming alertas:",
+              incoming,
+              "dismissed:",
+              dismissed,
+              "filtered:",
+              filtered
+            );
+          } catch (e) {}
+          setAlertas(filtered);
+          // persist raw alerts for debugging/fallback
+          try {
+            localStorage.setItem("alertas", JSON.stringify(incoming));
+            try {
+              window.dispatchEvent(new Event("user:sync"));
+            } catch (e) {}
+          } catch (e) {}
+        } catch (e) {
+          setAlertas(Array.isArray(data.alertas) ? data.alertas : []);
+        }
 
         // persistir en localStorage para que otras pestañas/tiendas lo detecten
         try {
@@ -105,15 +153,72 @@ export default function FinanzasPage() {
       } catch (err) {
         console.error("Error cargando usuario:", err);
         // On error, try to recover from localStorage/user
-        const fallbackGastos = JSON.parse(localStorage.getItem("gastos") || "[]");
-        const fallbackPres = JSON.parse(localStorage.getItem("presupuestos") || "{}");
+        const fallbackGastos = JSON.parse(
+          localStorage.getItem("gastos") || "[]"
+        );
+        const fallbackPres = JSON.parse(
+          localStorage.getItem("presupuestos") || "{}"
+        );
         setGastos(fallbackGastos);
         setPresupuestos(fallbackPres);
+        // si hubo error, intentar recuperar alertas de localStorage
+        try {
+          const dismissed = JSON.parse(
+            localStorage.getItem("dismissedAlertas") || "[]"
+          );
+          const stored =
+            JSON.parse(localStorage.getItem("alertas") || "null") || [];
+          setAlertas((stored || []).filter((a) => !dismissed.includes(a)));
+        } catch (e) {
+          setAlertas([]);
+        }
       }
     }
 
     loadData();
   }, [user]);
+
+  // Listen for changes to alerts in this tab (custom event) or other tabs (storage)
+  useEffect(() => {
+    const refreshFromStorage = () => {
+      try {
+        const raw = JSON.parse(localStorage.getItem("alertas") || "null") || [];
+        const dismissed =
+          JSON.parse(localStorage.getItem("dismissedAlertas") || "[]") || [];
+        const filtered = (Array.isArray(raw) ? raw : []).filter(
+          (a) => !dismissed.includes(a)
+        );
+        // show panel if new alerts arrived
+        if (filtered.length > (prevAlertCount.current || 0)) {
+          setShowAlertPanel(true);
+        }
+        setAlertas(filtered);
+      } catch (e) {
+        console.debug("refreshFromStorage error", e);
+      }
+    };
+
+    const onUserSync = () => refreshFromStorage();
+    const onStorage = (ev) => {
+      if (!ev) return;
+      if (ev.key === "alertas" || ev.key === "dismissedAlertas") {
+        refreshFromStorage();
+      }
+    };
+
+    window.addEventListener("user:sync", onUserSync);
+    window.addEventListener("storage", onStorage);
+
+    return () => {
+      window.removeEventListener("user:sync", onUserSync);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, []);
+
+  // keep ref in sync with current alert count
+  useEffect(() => {
+    prevAlertCount.current = Array.isArray(alertas) ? alertas.length : 0;
+  }, [alertas]);
 
   const addGasto = async (gasto) => {
     // Validaciones en frontend: monto válido y existe presupuesto asignado
@@ -127,16 +232,71 @@ export default function FinanzasPage() {
     }
 
     if (!presupuestoCat || presupuestoCat <= 0) {
-      alert("No hay presupuesto asignado para esta categoría. Asigna un presupuesto antes de registrar gastos.");
+      alert(
+        "No hay presupuesto asignado para esta categoría. Asigna un presupuesto antes de registrar gastos."
+      );
       return;
     }
 
     try {
       const res = await api.post(`/usuarios/${user.email}/gasto`, gasto);
-      const nuevoGasto = res?.data?.movimiento ?? gasto;
+      const movimiento = res?.data?.movimiento ?? gasto;
+
+      // Normalizar la forma del movimiento para que la UI lo muestre igual que los cargados desde el backend
+      const normalized = {
+        id: movimiento.id ?? movimiento._id ?? `${Date.now()}-${Math.random()}`,
+        nombre:
+          movimiento.descripcion ??
+          movimiento.nombre ??
+          movimiento.title ??
+          gasto.nombre ??
+          "",
+        monto:
+          Number(
+            movimiento.monto ??
+              movimiento.valor ??
+              movimiento.amount ??
+              gasto.monto
+          ) || 0,
+        categoria:
+          movimiento.categoria ?? movimiento.category ?? gasto.categoria ?? "",
+        fecha:
+          movimiento.fecha ?? movimiento.createdAt ?? new Date().toISOString(),
+      };
 
       setGastos((prev) => {
-        const updated = [...prev, nuevoGasto];
+        const updated = [...prev, normalized];
+        // Si el backend devuelve alertas junto con la respuesta, actualizarlas inmediatamente
+        try {
+          const newAlerts = res?.data?.alertas || null;
+          if (Array.isArray(newAlerts)) {
+            // merge into localStorage.alertas (raw)
+            const existingRaw =
+              JSON.parse(localStorage.getItem("alertas") || "null") || [];
+            const mergedRaw = Array.from(
+              new Set([
+                ...(Array.isArray(existingRaw) ? existingRaw : []),
+                ...newAlerts,
+              ])
+            );
+            try {
+              localStorage.setItem("alertas", JSON.stringify(mergedRaw));
+              try {
+                window.dispatchEvent(new Event("user:sync"));
+              } catch (e) {}
+            } catch (e) {}
+
+            // apply dismissed filter and set state
+            const dismissed =
+              JSON.parse(localStorage.getItem("dismissedAlertas") || "[]") ||
+              [];
+            const filtered = mergedRaw.filter((a) => !dismissed.includes(a));
+            setAlertas(filtered);
+            if (filtered.length > 0) setShowAlertPanel(true);
+          }
+        } catch (e) {
+          console.debug("error updating alerts from addGasto", e);
+        }
         try {
           localStorage.setItem("gastos", JSON.stringify(updated));
         } catch (e) {
@@ -146,9 +306,10 @@ export default function FinanzasPage() {
       });
     } catch (err) {
       console.error("Error guardando gasto:", err);
-      const msg = err?.response?.data?.detail || err.message || "Error al guardar gasto";
+      const msg =
+        err?.response?.data?.detail || err.message || "Error al guardar gasto";
       alert(msg);
-      setGastos((prev) => prev); // no change
+      // no modificar lista en caso de error
     }
   };
 
@@ -176,51 +337,26 @@ export default function FinanzasPage() {
     }
   };
 
-  const deshacerUltimoGasto = async (e) => {
-    console.log("Parametros", e );
-    
-    if (!user?.email) return alert("Usuario no identificado");
-
-    try {
-      const res = await api.delete(`/usuarios/${user.email}/gasto/undo`);
-      const movimiento = res?.data?.movimiento;
-
-      // eliminar de la lista local si existe
-      if (movimiento?.id) {
-        setGastos((prev) => {
-          const updated = prev.filter((g) => g.id !== movimiento.id);
-          try {
-            localStorage.setItem("gastos", JSON.stringify(updated));
-          } catch (e) {}
-          return updated;
-        });
-      }
-
-      // refrescar usuario completo desde backend para actualizar presupuestos/saldos
+  // Dismiss an alert and remember the dismissal in localStorage
+  const handleDismiss = (alertText) => {
+    setAlertas((prev) => {
+      const updated = prev.filter((a) => a !== alertText);
       try {
-        const full = await api.get(`/usuarios/ObtenerPor/${user.email}`);
-        const data = full?.data?.usuario || full?.data || null;
-        if (data) {
-          updateUser(data);
-          // también persistir en localStorage
-          try {
-            localStorage.setItem("user", JSON.stringify(data));
-            
-          } catch (e) {}
-        }
-      } catch (e) {
-        // no bloquear si falla la recarga
-        console.warn("No se pudo recargar usuario tras deshacer:", e);
-      }
-
-      alert(res?.data?.message || "Último gasto deshecho");
-    } catch (err) {
-      console.error("Error deshaciendo gasto:", err);
-      const msg = err?.response?.data?.detail || err.message || "Error al deshacer gasto";
-      alert(msg);
-    }
+        const dismissed = JSON.parse(
+          localStorage.getItem("dismissedAlertas") || "[]"
+        );
+        const nextDismissed = Array.isArray(dismissed)
+          ? [...dismissed, alertText]
+          : [alertText];
+        localStorage.setItem("dismissedAlertas", JSON.stringify(nextDismissed));
+        localStorage.setItem("alertas", JSON.stringify(updated));
+        try {
+          window.dispatchEvent(new Event("user:sync"));
+        } catch (e) {}
+      } catch (e) {}
+      return updated;
+    });
   };
-
 
   const WalletIcon = () => (
     <svg
@@ -245,7 +381,7 @@ export default function FinanzasPage() {
       <nav className="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            <Link to="/" className="flex items-center gap-2 py-4">
+            <Link to="/dashboard" className="flex items-center gap-2 py-4">
               <div className="text-[#4F46E5]">
                 <WalletIcon />
               </div>
@@ -253,7 +389,98 @@ export default function FinanzasPage() {
                 Smart<span className="text-[#4F46E5]">Budget</span>
               </h1>
             </Link>
+            <div className="flex items-center gap-4">
+              {/* Bell / Alertas (dropdown anclado con animación) */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowAlertPanel((s) => !s)}
+                  className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                  aria-label="Ver alertas"
+                >
+                  <BellIcon className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+                  {alertas && alertas.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {alertas.length}
+                    </span>
+                  )}
+                </button>
 
+                <AnimatePresence>
+                  {showAlertPanel && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      className="absolute right-0 mt-3 z-40"
+                    >
+                      <Notificacion
+                        alertas={alertas}
+                        onDismiss={handleDismiss}
+                        anchor={true}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Usuario */}
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen((s) => !s)}
+                  className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                  aria-label="Cuenta de usuario"
+                >
+                  <UserCircleIcon className="h-8 w-8 text-gray-600 dark:text-gray-200" />
+                </button>
+
+                {userMenuOpen && (
+                  <AnimatePresence>
+                    {userMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute right-0 mt-3 bg-white shadow-xl rounded-xl p-4 w-56 border border-gray-100 dark:bg-gray-800 dark:border-gray-700 z-40"
+                      >
+                        {!isAuthenticated ? (
+                          <Link
+                            to="/Autenticacion"
+                            className="block text-center text-gray-700 hover:text-black font-semibold"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            Iniciar sesión
+                          </Link>
+                        ) : (
+                          <>
+                            <p className="font-semibold text-gray-800 dark:text-gray-100">
+                              {user?.nombre}
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-gray-300">
+                              {user?.email}
+                            </p>
+
+                            <div className="h-px bg-gray-200 my-3 dark:bg-gray-700" />
+
+                            <button
+                              onClick={() => {
+                                try {
+                                  logout();
+                                } catch (e) {}
+                                setUserMenuOpen(false);
+                                navigate("/");
+                              }}
+                              className="block w-full text-left text-red-500 hover:text-red-700 font-semibold"
+                            >
+                              Cerrar sesión
+                            </button>
+                          </>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                )}
+              </div>
+            </div>
             <div className="md:hidden">
               <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -267,15 +494,20 @@ export default function FinanzasPage() {
       </nav>
 
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <h1 className="text-3xl font-bold dark:text-white mb-8">
-          Panel de Finanzas de <span className="text-[#4F46E5]">{user.nombre}</span>
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold dark:text-white mb-8">
+            Panel de Finanzas de{" "}
+            <span className="text-[#4F46E5]">{user.nombre}</span>
+          </h1>
+        </div>
 
         {/* DASHBOARD */}
         <Dashboard
           gastos={gastos}
           presupuestos={presupuestos}
-          ingresoMensual={user?.ingreso ?? user?.ingreso_mensual ?? user?.ingresoMensual ?? 0}
+          ingresoMensual={
+            user?.ingreso ?? user?.ingreso_mensual ?? user?.ingresoMensual ?? 0
+          }
         />
 
         {/* FORMULARIOS */}
@@ -295,15 +527,8 @@ export default function FinanzasPage() {
         {/* LISTA DE GASTOS */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
           <h2 className="text-2xl font-bold mb-4">Historial de Gastos</h2>
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={deshacerUltimoGasto}
-              className= "w-full bg-indigo-600 text-white py-2 rounded"
-            >
-              Deshacer último gasto
-            </button>
-          </div>
-            <div className="space-y-4">
+          <div className="flex justify-end mb-4"></div>
+          <div className="space-y-4">
             {gastos.length > 0 ? (
               gastos.map((g) => (
                 <div

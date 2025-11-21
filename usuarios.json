@@ -113,13 +113,13 @@
         "email": "loaiza@example.com",
         "password_hash": "$2b$12$zHhUN3NBwFCgbnNtTUllCO3jEkcb6k2Dni93kIV7zbxa2oNgpPdju",
         "ingreso_mensual": 1000000000.0,
-        "saldoRestante": 990000000.0,
-        "gastosMensuales": 999999.0,
+        "saldoRestante": 890000000.0,
+        "gastosMensuales": 0.0,
         "categorias": {
             "alimentacion": {
                 "presupuestoInicial": 10000000.0,
-                "saldoRestante": 9000001.0,
-                "gastos": 999999.0,
+                "saldoRestante": 10000000.0,
+                "gastos": 0,
                 "movimientos": [],
                 "nombre": "Alimentacion"
             },
@@ -138,13 +138,68 @@
                 "nombre": "Hogar"
             },
             "otros": {
-                "presupuestoInicial": 0,
-                "saldoRestante": 0,
-                "gastos": 0,
+                "presupuestoInicial": 100000000.0,
+                "saldoRestante": 100000000.0,
+                "gastos": 0.0,
                 "movimientos": [],
                 "nombre": "Otros"
             }
         },
         "historial": []
+    },
+    {
+        "nombre": "Pirlo",
+        "email": "pirlo@example.com",
+        "password_hash": "$2b$12$5LsPHhp6cyHIoCdqCXIpIui/Srsb15focLZ/tligZP4dj8Ur3icEq",
+        "ingreso_mensual": 20000000.0,
+        "saldoRestante": 0.0,
+        "gastosMensuales": 19000000.0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Alimentacion"
+            },
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
+            },
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
+            },
+            "otros": {
+                "presupuestoInicial": 20000000.0,
+                "saldoRestante": 1000000.0,
+                "gastos": 19000000.0,
+                "movimientos": [
+                    {
+                        "id": "954313e7-4bc6-47ad-9af7-68b5f6111643",
+                        "categoria": "Otros",
+                        "monto": 19000000.0,
+                        "descripcion": "Perico",
+                        "fecha": "2025-11-20 23:22:13"
+                    }
+                ],
+                "nombre": "Otros"
+            }
+        },
+        "historial": [
+            {
+                "id": "954313e7-4bc6-47ad-9af7-68b5f6111643",
+                "categoria": "Otros",
+                "monto": 19000000.0,
+                "descripcion": "Perico",
+                "fecha": "2025-11-20 23:22:13"
+            }
+        ]
     }
 ]
