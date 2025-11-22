@@ -36,7 +36,7 @@ export default function GastoForm({ onAdd }) {
 
         <input
           type="text"
-          placeholder="Nombre del gasto"
+          placeholder="Descripción del gasto"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           className="w-full p-2 border rounded mb-4"

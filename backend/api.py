@@ -147,7 +147,7 @@ def registrar_gasto(email: str, data: GastoRegistrar):
         guardar_usuarios(ctrl.usuarios)
         return {
             "message": f"Gasto registrado correctamente en {data.categoria}",
-            "movimiento": movimiento
+            "movimiento": movimiento,
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
