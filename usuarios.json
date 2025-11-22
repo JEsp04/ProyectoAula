@@ -2,16 +2,24 @@
     {
         "nombre": "Jhojan Espinosa",
         "email": "jhojan@example.com",
-        "password_hash": "$2b$12$v2zis6vpCGIVKb.kdfQVt.Mbl14410Bl/lBjHDlBMmeey4v9IpQDe",
+        "password_hash": "$2b$12$ZkoSLgUxCXuOIU3HtnZgIODvHc9QCDe0XB18RzKmNmSSYhWOolvVK",
         "ingreso_mensual": 1620000.0,
-        "saldoRestante": 0.0,
-        "gastosMensuales": 600000.0,
+        "saldoRestante": 1020000.0,
+        "gastosMensuales": 150000.0,
         "categorias": {
             "alimentacion": {
-                "presupuestoInicial": 620000.0,
-                "saldoRestante": 620000.0,
-                "gastos": 0.0,
-                "movimientos": [],
+                "presupuestoInicial": 400000.0,
+                "saldoRestante": 250000.0,
+                "gastos": 150000.0,
+                "movimientos": [
+                    {
+                        "id": "37409dde-0524-41a1-8611-6043a0ef7883",
+                        "categoria": "Alimentacion",
+                        "monto": 150000.0,
+                        "descripcion": "Carne",
+                        "fecha": "2025-11-22 14:32:29"
+                    }
+                ],
                 "nombre": "Alimentacion"
             },
             "transporte": {
@@ -22,36 +30,147 @@
                 "nombre": "Transporte"
             },
             "hogar": {
-                "presupuestoInicial": 700000.0,
-                "saldoRestante": 100000.0,
-                "gastos": 600000.0,
-                "movimientos": [
-                    {
-                        "id": "1d17da14-a4e7-4ee5-be4a-ea4da98ef328",
-                        "categoria": "Hogar",
-                        "monto": 600000.0,
-                        "descripcion": "Arriendo",
-                        "fecha": "2025-11-22 12:18:17"
-                    }
-                ],
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
                 "nombre": "Hogar"
             },
             "otros": {
-                "presupuestoInicial": 100000.0,
-                "saldoRestante": 100000.0,
-                "gastos": 0.0,
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
                 "movimientos": [],
                 "nombre": "Otros"
             }
         },
         "historial": [
             {
-                "id": "1d17da14-a4e7-4ee5-be4a-ea4da98ef328",
-                "categoria": "Hogar",
-                "monto": 600000.0,
-                "descripcion": "Arriendo",
-                "fecha": "2025-11-22 12:18:17"
+                "id": "37409dde-0524-41a1-8611-6043a0ef7883",
+                "categoria": "Alimentacion",
+                "monto": 150000.0,
+                "descripcion": "Carne",
+                "fecha": "2025-11-22 14:32:29"
             }
-        ]
+        ],
+        "categorias_arbol": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 400000.0,
+                    "gastos": 150000.0,
+                    "saldoRestante": 250000.0,
+                    "movimientos": [
+                        {
+                            "id": "37409dde-0524-41a1-8611-6043a0ef7883",
+                            "categoria": "Alimentacion",
+                            "monto": 150000.0,
+                            "descripcion": "Carne",
+                            "fecha": "2025-11-22 14:32:29"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 150000.0,
+                    "total_presupuesto_recursive": 400000.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 200000.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 200000.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 200000.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                }
+            ],
+            "total_gastos_recursive": 150000.0,
+            "total_presupuesto_recursive": 600000.0
+        },
+        "ArbolGeneral": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 400000.0,
+                    "gastos": 150000.0,
+                    "saldoRestante": 250000.0,
+                    "movimientos": [
+                        {
+                            "id": "37409dde-0524-41a1-8611-6043a0ef7883",
+                            "categoria": "Alimentacion",
+                            "monto": 150000.0,
+                            "descripcion": "Carne",
+                            "fecha": "2025-11-22 14:32:29"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 150000.0,
+                    "total_presupuesto_recursive": 400000.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 200000.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 200000.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 200000.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                }
+            ],
+            "total_gastos_recursive": 150000.0,
+            "total_presupuesto_recursive": 600000.0
+        },
+        "alertas": []
     }
 ]
