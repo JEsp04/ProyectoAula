@@ -6,6 +6,7 @@ from backend.models.categorias import (
     Hogar,
     Otros,
 )  # importamos las categorias
+from backend.models.category_node import CategoryNode
 from hashlib import sha256  # para hashear contraseñas
 import bcrypt
 
@@ -27,6 +28,7 @@ class Usuario:
         self.hogar = Hogar()
         self.otros = Otros()
         self.historial = []  # historial de todos los movimientos del usuario
+        self.ArbolGeneral = {}  # representación jerárquica de categorías
 
     def set_password(self, password: str):
         hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
@@ -96,8 +98,7 @@ class Usuario:
         # se guarda en el historial global del usuario y en el historial de la categoria
         categoria.movimientos.append(movimiento)
         self.historial.append(movimiento)
-        # se guarda en la pila para poder deshacer el ultimo gasto si es necesario
-        # self.pila.append(("gasto", categoria, monto, movimiento))
+        
         return movimiento
 
     def obtener_historial(self):
@@ -150,8 +151,39 @@ class Usuario:
                 "historial": self.obtener_historial(),
             },
             "alertas": self.Alertas(),
+            # Representación jerárquica de categorías (árbol)
+            "categorias_arbol": self.build_category_tree_dict(),
         }
         return resumen
+
+    def build_category_tree(self):
+        """Construye un CategoryNode raíz con las categorías actuales como hijos.
+
+        Por ahora mapea las cuatro categorías planas a hijos directos. Más adelante
+        se pueden añadir subcategorías y relaciones dinámicas.
+        """
+        root = CategoryNode("Categorias")
+
+        def make_node(cat_obj):
+            return CategoryNode(
+                name=getattr(cat_obj, "nombre", ""),
+                presupuesto=getattr(cat_obj, "presupuestoInicial", 0),
+                gastos=getattr(cat_obj, "gastos", 0),
+                saldoRestante=getattr(cat_obj, "saldoRestante", 0),
+                movimientos=list(getattr(cat_obj, "movimientos", []) or []),
+            )
+
+        for cat in [self.alimentacion, self.transporte, self.hogar, self.otros]:
+            node = make_node(cat)
+            root.add_child(node)
+
+        return root
+
+    def build_category_tree_dict(self):
+        try:
+            return self.build_category_tree().to_dict()
+        except Exception:
+            return {}
 
     def Alertas(self):
         # genera alertas si el usuario ha gastado mas del 80% de su ingreso mensual o del presupuesto de alguna categoria

@@ -4,6 +4,7 @@ import ExpenseForm from "../components/GastoForm";
 import BudgetForm from "../components/PresupuestoForm";
 import Dashboard from "../components/Dashboard";
 import Notificacion from "../components/Notificacion";
+import CategoryTree from "../components/CategoryTree";
 import { TrashIcon, BellIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,6 +16,7 @@ export default function FinanzasPage() {
 
   const [gastos, setGastos] = useState([]);
   const [presupuestos, setPresupuestos] = useState({});
+  const [categoryTree, setCategoryTree] = useState(null);
   const [alertas, setAlertas] = useState([]);
   const [showAlertPanel, setShowAlertPanel] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -139,6 +141,26 @@ export default function FinanzasPage() {
           setAlertas(Array.isArray(data.alertas) ? data.alertas : []);
         }
 
+        // Categorias en forma de árbol (si el backend lo provee)
+        try {
+          if (data && data.categorias_arbol) {
+            setCategoryTree(data.categorias_arbol);
+            try {
+              localStorage.setItem(
+                "categorias_arbol",
+                JSON.stringify(data.categorias_arbol)
+              );
+            } catch (e) {}
+          } else {
+            const stored = JSON.parse(
+              localStorage.getItem("categorias_arbol") || "null"
+            );
+            if (stored) setCategoryTree(stored);
+          }
+        } catch (e) {
+          console.debug("no category tree in response", e);
+        }
+
         // persistir en localStorage para que otras pestañas/tiendas lo detecten
         try {
           localStorage.setItem("gastos", JSON.stringify(gastosList));
@@ -177,6 +199,17 @@ export default function FinanzasPage() {
 
     loadData();
   }, [user]);
+
+  // Debug: log and expose categoryTree for quick console inspection
+  useEffect(() => {
+    try {
+      console.debug("FinanzasPage - categoryTree updated:", categoryTree);
+    } catch (e) {}
+    try {
+      // expose to window for debugging in the browser console
+      window.__categoryTree = categoryTree;
+    } catch (e) {}
+  }, [categoryTree]);
 
   // Listen for changes to alerts in this tab (custom event) or other tabs (storage)
   useEffect(() => {
@@ -221,86 +254,100 @@ export default function FinanzasPage() {
   }, [alertas]);
 
   const addGasto = async (gasto) => {
-  const categoriaKey = (gasto.categoria || "").toLowerCase();
-  const presupuestoCat = presupuestos[categoriaKey] ?? 0;
-  const montoNum = Number(gasto.monto || 0);
+    const categoriaKey = (gasto.categoria || "").toLowerCase();
+    const presupuestoCat = presupuestos[categoriaKey] ?? 0;
+    const montoNum = Number(gasto.monto || 0);
 
-  if (isNaN(montoNum) || montoNum <= 0) {
-    alert("Ingresa un monto válido mayor que 0.");
-    return;
-  }
+    if (isNaN(montoNum) || montoNum <= 0) {
+      alert("Ingresa un monto válido mayor que 0.");
+      return;
+    }
 
-  if (!presupuestoCat || presupuestoCat <= 0) {
-    alert("No hay presupuesto asignado para esta categoría.");
-    return;
-  }
+    if (!presupuestoCat || presupuestoCat <= 0) {
+      alert("No hay presupuesto asignado para esta categoría.");
+      return;
+    }
 
-  try {
-    // Registrar gasto
-    const res = await api.post(`/usuarios/${user.email}/gasto`, gasto);
+    try {
+      // Registrar gasto
+      const res = await api.post(`/usuarios/${user.email}/gasto`, gasto);
 
-    const movimiento = res?.data?.movimiento ?? gasto;
+      const movimiento = res?.data?.movimiento ?? gasto;
 
-    const normalized = {
-      id: movimiento.id ?? movimiento._id ?? `${Date.now()}-${Math.random()}`,
-      nombre:
-        movimiento.descripcion ??
-        movimiento.nombre ??
-        movimiento.title ??
-        gasto.nombre ??
-        "",
-      monto:
-        Number(
-          movimiento.monto ??
-            movimiento.valor ??
-            movimiento.amount ??
-            gasto.monto
-        ) || 0,
-      categoria:
-        movimiento.categoria ?? movimiento.category ?? gasto.categoria ?? "",
-      fecha:
-        movimiento.fecha ?? movimiento.createdAt ?? new Date().toISOString(),
-    };
+      const normalized = {
+        id: movimiento.id ?? movimiento._id ?? `${Date.now()}-${Math.random()}`,
+        nombre:
+          movimiento.descripcion ??
+          movimiento.nombre ??
+          movimiento.title ??
+          gasto.nombre ??
+          "",
+        monto:
+          Number(
+            movimiento.monto ??
+              movimiento.valor ??
+              movimiento.amount ??
+              gasto.monto
+          ) || 0,
+        categoria:
+          movimiento.categoria ?? movimiento.category ?? gasto.categoria ?? "",
+        fecha:
+          movimiento.fecha ?? movimiento.createdAt ?? new Date().toISOString(),
+      };
 
-    // 1️⃣ Actualizar lista local de gastos
-    setGastos((prev) => {
-      const updated = [...prev, normalized];
-      localStorage.setItem("gastos", JSON.stringify(updated));
-      return updated;
-    });
+      // 1️⃣ Actualizar lista local de gastos
+      setGastos((prev) => {
+        const updated = [...prev, normalized];
+        localStorage.setItem("gastos", JSON.stringify(updated));
+        return updated;
+      });
 
-    // 2️⃣ Obtener usuario ACTUALIZADO desde backend (aquí vienen las alertas nuevas)
-    const resUser = await api.get(`/usuarios/ObtenerPor/${user.email}`);
-    const updatedUser = resUser.data.usuario || resUser.data;
+      // 2️⃣ Obtener usuario ACTUALIZADO desde backend (aquí vienen las alertas nuevas)
+      const resUser = await api.get(`/usuarios/ObtenerPor/${user.email}`);
+      const updatedUser = resUser.data.usuario || resUser.data;
 
-    // 3️⃣ Guardar y propagar usuario actualizado
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    updateUser(updatedUser); // 🔥 fuerza render + dispara useEffect de FinanzasPage
+      // 3️⃣ Guardar y propagar usuario actualizado
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      updateUser(updatedUser); // 🔥 fuerza render + dispara useEffect de FinanzasPage
 
-    // 4️⃣ Cargar alertas desde updatedUser y mostrarlas
-    const incomingAlerts = Array.isArray(updatedUser.alertas)
-      ? updatedUser.alertas
-      : [];
+      // Actualizar árbol de categorías inmediatamente si viene en la respuesta
+      try {
+        if (updatedUser && updatedUser.categorias_arbol) {
+          setCategoryTree(updatedUser.categorias_arbol);
+          localStorage.setItem(
+            "categorias_arbol",
+            JSON.stringify(updatedUser.categorias_arbol)
+          );
+          try {
+            window.dispatchEvent(new Event("user:sync"));
+          } catch (e) {}
+        }
+      } catch (e) {
+        console.debug("no categorias_arbol on updatedUser", e);
+      }
 
-    const dismissed = JSON.parse(
-      localStorage.getItem("dismissedAlertas") || "[]"
-    );
+      // 4️⃣ Cargar alertas desde updatedUser y mostrarlas
+      const incomingAlerts = Array.isArray(updatedUser.alertas)
+        ? updatedUser.alertas
+        : [];
 
-    const filtered = incomingAlerts.filter((a) => !dismissed.includes(a));
+      const dismissed = JSON.parse(
+        localStorage.getItem("dismissedAlertas") || "[]"
+      );
 
-    localStorage.setItem("alertas", JSON.stringify(incomingAlerts));
-    setAlertas(filtered);
+      const filtered = incomingAlerts.filter((a) => !dismissed.includes(a));
 
-    if (filtered.length > 0) setShowAlertPanel(true);
+      localStorage.setItem("alertas", JSON.stringify(incomingAlerts));
+      setAlertas(filtered);
 
-  } catch (err) {
-    console.error("Error guardando gasto:", err);
-    const msg =
-      err?.response?.data?.detail || err.message || "Error al guardar gasto";
-    alert(msg);
-  }
-};
-
+      if (filtered.length > 0) setShowAlertPanel(true);
+    } catch (err) {
+      console.error("Error guardando gasto:", err);
+      const msg =
+        err?.response?.data?.detail || err.message || "Error al guardar gasto";
+      alert(msg);
+    }
+  };
 
   // 🗑 Eliminar gasto
   const eliminarGasto = async (id) => {
@@ -315,10 +362,9 @@ export default function FinanzasPage() {
       });
       const resUser = await api.get(`/usuarios/ObtenerPor/${user.email}`);
       const updatedUser = resUser.data.usuario || resUser.data;
-      
+
       localStorage.setItem("user", JSON.stringify(updatedUser));
       updateUser(updatedUser);
-
     } catch (err) {
       console.error("Error al eliminar:", err);
       // local fallback remove
@@ -331,7 +377,6 @@ export default function FinanzasPage() {
       });
     }
   };
-
 
   const WalletIcon = () => (
     <svg
@@ -388,10 +433,7 @@ export default function FinanzasPage() {
                       exit={{ opacity: 0, y: -6 }}
                       className="absolute right-0 mt-3 z-40"
                     >
-                      <Notificacion
-                        alertas={alertas}
-                        anchor={true}
-                      />
+                      <Notificacion alertas={alertas} anchor={true} />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -468,11 +510,17 @@ export default function FinanzasPage() {
       </nav>
 
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold dark:text-white mb-8">
-            Panel de Finanzas de{" "}
-            <span className="text-[#4F46E5]">{user.nombre}</span>
-          </h1>
+        <div className="flex items-start justify-between gap-8">
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold dark:text-white mb-4">
+              Panel de Finanzas de{" "}
+              <span className="text-[#4F46E5]">{user.nombre}</span>
+            </h1>
+          </div>
+
+          <div className="w-96 hidden lg:block">
+            {/* espacio para posibles widgets laterales (mantiene diseño) */}
+          </div>
         </div>
 
         {/* DASHBOARD */}
@@ -482,6 +530,7 @@ export default function FinanzasPage() {
           ingresoMensual={
             user?.ingreso ?? user?.ingreso_mensual ?? user?.ingresoMensual ?? 0
           }
+          arbolGeneral={categoryTree}
         />
 
         {/* FORMULARIOS */}

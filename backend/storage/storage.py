@@ -1,32 +1,49 @@
-import json # biblioteca para manejar archivos JSON
-from backend.models.usuario import Usuario # importamos la clase Usuario para crear y manejar usuarios
+import json  # biblioteca para manejar archivos JSON
+from backend.models.usuario import (
+    Usuario,
+)  # importamos la clase Usuario para crear y manejar usuarios
 from backend.models.categorias import Alimentacion, Transporte, Hogar, Otros
+from backend.models.category_node import CategoryNode
 
 ARCHIVO_USUARIOS = "usuarios.json"
 
+
 def guardar_usuarios(usuarios, archivo=ARCHIVO_USUARIOS):
-    #guarda la informacion de los usuarios en un archivo JSON
-    #convierte cada usuario a un diccionario usando el metodo obtener_resumen y lo almacena en formato JSON
+    # guarda la informacion de los usuarios en un archivo JSON
+    # convierte cada usuario a un diccionario usando el metodo obtener_resumen y lo almacena en formato JSON
     # cada usuario se guarda con su nombre, ingreso mensual, categorias, presupuestos, gastos y movimientos
     data = []
     # convertimos cada usuario a un diccionario
     for u in usuarios:
-        data.append({
-            "nombre": u.nombre,
-            "email": u.email,
-            "password_hash": u.password_hash,
-            "ingreso_mensual": u.ingreso_mensual,
-            "saldoRestante": u.saldoRestante,
-            "gastosMensuales": u.gastosMensuales,
-            "categorias": {
-                "alimentacion": u.alimentacion.__dict__,
-                "transporte": u.transporte.__dict__,
-                "hogar": u.hogar.__dict__,
-                "otros": u.otros.__dict__
-            },
-            "historial": u.historial
-        })
-        
+        # Build category tree dict and alertas to persist
+        try:
+            categorias_arbol = u.build_category_tree_dict()
+        except Exception:
+            categorias_arbol = {}
+
+        data.append(
+            {
+                "nombre": u.nombre,
+                "email": u.email,
+                "password_hash": u.password_hash,
+                "ingreso_mensual": u.ingreso_mensual,
+                "saldoRestante": u.saldoRestante,
+                "gastosMensuales": u.gastosMensuales,
+                "categorias": {
+                    "alimentacion": u.alimentacion.__dict__,
+                    "transporte": u.transporte.__dict__,
+                    "hogar": u.hogar.__dict__,
+                    "otros": u.otros.__dict__,
+                },
+                "historial": u.historial,
+                # persist both keys for backward compatibility
+                "categorias_arbol": categorias_arbol,
+                "ArbolGeneral": categorias_arbol,
+                # compute alertas at save time
+                "alertas": u.Alertas(),
+            }
+        )
+
         # guardamos el diccionario en un archivo JSON
     try:
         with open(archivo, "w", encoding="utf-8") as f:
@@ -35,9 +52,10 @@ def guardar_usuarios(usuarios, archivo=ARCHIVO_USUARIOS):
     except Exception as e:
         print(f"Error al guardar usuarios: {e}")
 
+
 def cargar_usuarios(archivo="usuarios.json"):
     # carga la informacion de los usuarios desde un archivo JSON en el que se almaceno previamente
-    #reconstruye cada usuario y sus categorias, presupuestos y movimientos guardados
+    # reconstruye cada usuario y sus categorias, presupuestos y movimientos guardados
     # devuelve una lista de objetos Usuario
     # En este puntos tambein optamos por guiarmnos con IA para el tema de los archvios JSON
     usuarios = []
@@ -50,7 +68,7 @@ def cargar_usuarios(archivo="usuarios.json"):
                 nombre=u["nombre"],
                 email=u["email"],
                 ingreso_mensual=u.get("ingreso_mensual", 0.0),
-                password_hash=u.get("password_hash", "")
+                password_hash=u.get("password_hash", ""),
             )
 
             # Restaurar estado financiero
@@ -59,7 +77,9 @@ def cargar_usuarios(archivo="usuarios.json"):
 
             # Restaurar categorías (si no existen, crear nuevas)
             usuario.alimentacion = Alimentacion()
-            usuario.alimentacion.__dict__.update(u["categorias"].get("alimentacion", {}))
+            usuario.alimentacion.__dict__.update(
+                u["categorias"].get("alimentacion", {})
+            )
 
             usuario.transporte = Transporte()
             usuario.transporte.__dict__.update(u["categorias"].get("transporte", {}))
@@ -72,6 +92,9 @@ def cargar_usuarios(archivo="usuarios.json"):
 
             # Restaurar historial (si existe)
             usuario.historial = u.get("historial", [])
+            # Restaurar árbol de categorías general
+            # Restore category tree if present (prefer new key)
+            usuario.ArbolGeneral = u.get("categorias_arbol", u.get("ArbolGeneral", {}))
 
             usuarios.append(usuario)
 
