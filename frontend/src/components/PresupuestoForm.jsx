@@ -13,13 +13,24 @@ export default function PresupuestoForm({ presupuestos, onSave }) {
     e.preventDefault();
     if (!monto) return;
 
-    await api.post(`/usuarios/${user.email}/presupuesto`, {
-      categoria,
-      monto: Number(monto),
-    });
+    try {
+      const res = await api.post(`/usuarios/${user.email}/presupuesto`, {
+        categoria: categoria.toLowerCase(),
+        monto: Number(monto),
+      });
 
-    onSave(categoria, Number(monto));
-    setMonto("");
+      // si todo ok, invocar callback y limpiar
+      onSave(categoria.toLowerCase(), Number(monto));
+      setMonto("");
+    } catch (err) {
+      // mostrar mensaje de error amigable (proviene del backend)
+      const msg =
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Error al guardar presupuesto";
+      alert(msg);
+      console.error("Error guardando presupuesto:", err);
+    }
   };
 
   return (

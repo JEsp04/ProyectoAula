@@ -221,97 +221,86 @@ export default function FinanzasPage() {
   }, [alertas]);
 
   const addGasto = async (gasto) => {
-    // Validaciones en frontend: monto válido y existe presupuesto asignado
-    const categoriaKey = (gasto.categoria || "").toLowerCase();
-    const presupuestoCat = presupuestos[categoriaKey] ?? 0;
-    const montoNum = Number(gasto.monto || 0);
+  const categoriaKey = (gasto.categoria || "").toLowerCase();
+  const presupuestoCat = presupuestos[categoriaKey] ?? 0;
+  const montoNum = Number(gasto.monto || 0);
 
-    if (isNaN(montoNum) || montoNum <= 0) {
-      alert("Ingresa un monto válido mayor que 0.");
-      return;
-    }
+  if (isNaN(montoNum) || montoNum <= 0) {
+    alert("Ingresa un monto válido mayor que 0.");
+    return;
+  }
 
-    if (!presupuestoCat || presupuestoCat <= 0) {
-      alert(
-        "No hay presupuesto asignado para esta categoría. Asigna un presupuesto antes de registrar gastos."
-      );
-      return;
-    }
+  if (!presupuestoCat || presupuestoCat <= 0) {
+    alert("No hay presupuesto asignado para esta categoría.");
+    return;
+  }
 
-    try {
-      const res = await api.post(`/usuarios/${user.email}/gasto`, gasto);
-      const movimiento = res?.data?.movimiento ?? gasto;
+  try {
+    // Registrar gasto
+    const res = await api.post(`/usuarios/${user.email}/gasto`, gasto);
 
-      // Normalizar la forma del movimiento para que la UI lo muestre igual que los cargados desde el backend
-      const normalized = {
-        id: movimiento.id ?? movimiento._id ?? `${Date.now()}-${Math.random()}`,
-        nombre:
-          movimiento.descripcion ??
-          movimiento.nombre ??
-          movimiento.title ??
-          gasto.nombre ??
-          "",
-        monto:
-          Number(
-            movimiento.monto ??
-              movimiento.valor ??
-              movimiento.amount ??
-              gasto.monto
-          ) || 0,
-        categoria:
-          movimiento.categoria ?? movimiento.category ?? gasto.categoria ?? "",
-        fecha:
-          movimiento.fecha ?? movimiento.createdAt ?? new Date().toISOString(),
-      };
+    const movimiento = res?.data?.movimiento ?? gasto;
 
-      setGastos((prev) => {
-        const updated = [...prev, normalized];
-        // Si el backend devuelve alertas junto con la respuesta, actualizarlas inmediatamente
-        try {
-          const newAlerts = res?.data?.alertas || null;
-          if (Array.isArray(newAlerts)) {
-            // merge into localStorage.alertas (raw)
-            const existingRaw =
-              JSON.parse(localStorage.getItem("alertas") || "null") || [];
-            const mergedRaw = Array.from(
-              new Set([
-                ...(Array.isArray(existingRaw) ? existingRaw : []),
-                ...newAlerts,
-              ])
-            );
-            try {
-              localStorage.setItem("alertas", JSON.stringify(mergedRaw));
-              try {
-                window.dispatchEvent(new Event("user:sync"));
-              } catch (e) {}
-            } catch (e) {}
+    const normalized = {
+      id: movimiento.id ?? movimiento._id ?? `${Date.now()}-${Math.random()}`,
+      nombre:
+        movimiento.descripcion ??
+        movimiento.nombre ??
+        movimiento.title ??
+        gasto.nombre ??
+        "",
+      monto:
+        Number(
+          movimiento.monto ??
+            movimiento.valor ??
+            movimiento.amount ??
+            gasto.monto
+        ) || 0,
+      categoria:
+        movimiento.categoria ?? movimiento.category ?? gasto.categoria ?? "",
+      fecha:
+        movimiento.fecha ?? movimiento.createdAt ?? new Date().toISOString(),
+    };
 
-            // apply dismissed filter and set state
-            const dismissed =
-              JSON.parse(localStorage.getItem("dismissedAlertas") || "[]") ||
-              [];
-            const filtered = mergedRaw.filter((a) => !dismissed.includes(a));
-            setAlertas(filtered);
-            if (filtered.length > 0) setShowAlertPanel(true);
-          }
-        } catch (e) {
-          console.debug("error updating alerts from addGasto", e);
-        }
-        try {
-          localStorage.setItem("gastos", JSON.stringify(updated));
-        } catch (e) {
-          console.warn("No se pudo guardar gastos en localStorage:", e);
-        }
-        return updated;
-      });
-    } catch (err) {
-      console.error("Error guardando gasto:", err);
-      const msg =
-        err?.response?.data?.detail || err.message || "Error al guardar gasto";
-      alert(msg);
-      // no modificar lista en caso de error
-    }
-  };
+    // 1️⃣ Actualizar lista local de gastos
+    setGastos((prev) => {
+      const updated = [...prev, normalized];
+      localStorage.setItem("gastos", JSON.stringify(updated));
+      return updated;
+    });
+
+    // 2️⃣ Obtener usuario ACTUALIZADO desde backend (aquí vienen las alertas nuevas)
+    const resUser = await api.get(`/usuarios/ObtenerPor/${user.email}`);
+    const updatedUser = resUser.data.usuario || resUser.data;
+
+    // 3️⃣ Guardar y propagar usuario actualizado
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    updateUser(updatedUser); // 🔥 fuerza render + dispara useEffect de FinanzasPage
+
+    // 4️⃣ Cargar alertas desde updatedUser y mostrarlas
+    const incomingAlerts = Array.isArray(updatedUser.alertas)
+      ? updatedUser.alertas
+      : [];
+
+    const dismissed = JSON.parse(
+      localStorage.getItem("dismissedAlertas") || "[]"
+    );
+
+    const filtered = incomingAlerts.filter((a) => !dismissed.includes(a));
+
+    localStorage.setItem("alertas", JSON.stringify(incomingAlerts));
+    setAlertas(filtered);
+
+    if (filtered.length > 0) setShowAlertPanel(true);
+
+  } catch (err) {
+    console.error("Error guardando gasto:", err);
+    const msg =
+      err?.response?.data?.detail || err.message || "Error al guardar gasto";
+    alert(msg);
+  }
+};
+
 
   // 🗑 Eliminar gasto
   const eliminarGasto = async (id) => {
@@ -324,6 +313,12 @@ export default function FinanzasPage() {
         } catch (e) {}
         return updated;
       });
+      const resUser = await api.get(`/usuarios/ObtenerPor/${user.email}`);
+      const updatedUser = resUser.data.usuario || resUser.data;
+      
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      updateUser(updatedUser);
+
     } catch (err) {
       console.error("Error al eliminar:", err);
       // local fallback remove
@@ -337,26 +332,6 @@ export default function FinanzasPage() {
     }
   };
 
-  // Dismiss an alert and remember the dismissal in localStorage
-  const handleDismiss = (alertText) => {
-    setAlertas((prev) => {
-      const updated = prev.filter((a) => a !== alertText);
-      try {
-        const dismissed = JSON.parse(
-          localStorage.getItem("dismissedAlertas") || "[]"
-        );
-        const nextDismissed = Array.isArray(dismissed)
-          ? [...dismissed, alertText]
-          : [alertText];
-        localStorage.setItem("dismissedAlertas", JSON.stringify(nextDismissed));
-        localStorage.setItem("alertas", JSON.stringify(updated));
-        try {
-          window.dispatchEvent(new Event("user:sync"));
-        } catch (e) {}
-      } catch (e) {}
-      return updated;
-    });
-  };
 
   const WalletIcon = () => (
     <svg
@@ -415,7 +390,6 @@ export default function FinanzasPage() {
                     >
                       <Notificacion
                         alertas={alertas}
-                        onDismiss={handleDismiss}
                         anchor={true}
                       />
                     </motion.div>
