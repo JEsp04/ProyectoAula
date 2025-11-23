@@ -5,19 +5,26 @@
         "password_hash": "$2b$12$ZkoSLgUxCXuOIU3HtnZgIODvHc9QCDe0XB18RzKmNmSSYhWOolvVK",
         "ingreso_mensual": 1620000.0,
         "saldoRestante": 1020000.0,
-        "gastosMensuales": 150000.0,
+        "gastosMensuales": 350000.0,
         "categorias": {
             "alimentacion": {
                 "presupuestoInicial": 400000.0,
-                "saldoRestante": 250000.0,
-                "gastos": 150000.0,
+                "saldoRestante": 50000.0,
+                "gastos": 350000.0,
                 "movimientos": [
                     {
-                        "id": "37409dde-0524-41a1-8611-6043a0ef7883",
+                        "id": "2aa17542-5268-458d-b882-1f362cd644c8",
                         "categoria": "Alimentacion",
-                        "monto": 150000.0,
+                        "monto": 160000.0,
+                        "descripcion": "Mercado",
+                        "fecha": "2025-11-23 12:36:19"
+                    },
+                    {
+                        "id": "fa037058-25d6-4b68-be38-07d0bfa173db",
+                        "categoria": "Alimentacion",
+                        "monto": 190000.0,
                         "descripcion": "Carne",
-                        "fecha": "2025-11-22 14:32:29"
+                        "fecha": "2025-11-23 12:36:38"
                     }
                 ],
                 "nombre": "Alimentacion"
@@ -46,11 +53,18 @@
         },
         "historial": [
             {
-                "id": "37409dde-0524-41a1-8611-6043a0ef7883",
+                "id": "2aa17542-5268-458d-b882-1f362cd644c8",
                 "categoria": "Alimentacion",
-                "monto": 150000.0,
+                "monto": 160000.0,
+                "descripcion": "Mercado",
+                "fecha": "2025-11-23 12:36:19"
+            },
+            {
+                "id": "fa037058-25d6-4b68-be38-07d0bfa173db",
+                "categoria": "Alimentacion",
+                "monto": 190000.0,
                 "descripcion": "Carne",
-                "fecha": "2025-11-22 14:32:29"
+                "fecha": "2025-11-23 12:36:38"
             }
         ],
         "categorias_arbol": {
@@ -63,19 +77,26 @@
                 {
                     "name": "Alimentacion",
                     "presupuesto": 400000.0,
-                    "gastos": 150000.0,
-                    "saldoRestante": 250000.0,
+                    "gastos": 350000.0,
+                    "saldoRestante": 50000.0,
                     "movimientos": [
                         {
-                            "id": "37409dde-0524-41a1-8611-6043a0ef7883",
+                            "id": "2aa17542-5268-458d-b882-1f362cd644c8",
                             "categoria": "Alimentacion",
-                            "monto": 150000.0,
+                            "monto": 160000.0,
+                            "descripcion": "Mercado",
+                            "fecha": "2025-11-23 12:36:19"
+                        },
+                        {
+                            "id": "fa037058-25d6-4b68-be38-07d0bfa173db",
+                            "categoria": "Alimentacion",
+                            "monto": 190000.0,
                             "descripcion": "Carne",
-                            "fecha": "2025-11-22 14:32:29"
+                            "fecha": "2025-11-23 12:36:38"
                         }
                     ],
                     "children": [],
-                    "total_gastos_recursive": 150000.0,
+                    "total_gastos_recursive": 350000.0,
                     "total_presupuesto_recursive": 400000.0
                 },
                 {
@@ -109,7 +130,7 @@
                     "total_presupuesto_recursive": 0.0
                 }
             ],
-            "total_gastos_recursive": 150000.0,
+            "total_gastos_recursive": 350000.0,
             "total_presupuesto_recursive": 600000.0
         },
         "ArbolGeneral": {
@@ -122,19 +143,26 @@
                 {
                     "name": "Alimentacion",
                     "presupuesto": 400000.0,
-                    "gastos": 150000.0,
-                    "saldoRestante": 250000.0,
+                    "gastos": 350000.0,
+                    "saldoRestante": 50000.0,
                     "movimientos": [
                         {
-                            "id": "37409dde-0524-41a1-8611-6043a0ef7883",
+                            "id": "2aa17542-5268-458d-b882-1f362cd644c8",
                             "categoria": "Alimentacion",
-                            "monto": 150000.0,
+                            "monto": 160000.0,
+                            "descripcion": "Mercado",
+                            "fecha": "2025-11-23 12:36:19"
+                        },
+                        {
+                            "id": "fa037058-25d6-4b68-be38-07d0bfa173db",
+                            "categoria": "Alimentacion",
+                            "monto": 190000.0,
                             "descripcion": "Carne",
-                            "fecha": "2025-11-22 14:32:29"
+                            "fecha": "2025-11-23 12:36:38"
                         }
                     ],
                     "children": [],
-                    "total_gastos_recursive": 150000.0,
+                    "total_gastos_recursive": 350000.0,
                     "total_presupuesto_recursive": 400000.0
                 },
                 {
@@ -168,8 +196,533 @@
                     "total_presupuesto_recursive": 0.0
                 }
             ],
-            "total_gastos_recursive": 150000.0,
+            "total_gastos_recursive": 350000.0,
             "total_presupuesto_recursive": 600000.0
+        },
+        "alertas": [
+            "Alerta: Ha gastado el 87.50% del presupuesto asignado para la categoría Alimentación."
+        ]
+    },
+    {
+        "nombre": "Breynercrack57",
+        "email": "breynercrack57@gmail.com",
+        "password_hash": "$2b$12$/o1yaBUS0/9.n8jemuV9KOEBOgTRE47JEfiRNm2XgfbYfH/nCcsF6",
+        "ingreso_mensual": 1000000.0,
+        "saldoRestante": 0.0,
+        "gastosMensuales": 1000000.0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 500000.0,
+                "saldoRestante": 0.0,
+                "gastos": 500000.0,
+                "movimientos": [
+                    {
+                        "id": "4ddc172d-ea27-4c18-9b78-6c0a879f4424",
+                        "categoria": "Alimentacion",
+                        "monto": 50000.0,
+                        "descripcion": "Verdura",
+                        "fecha": "2025-11-22 23:07:33"
+                    },
+                    {
+                        "id": "5cf236b6-177d-499d-8d63-e5833acef8e5",
+                        "categoria": "Alimentacion",
+                        "monto": 200000.0,
+                        "descripcion": "Carne",
+                        "fecha": "2025-11-22 23:07:40"
+                    },
+                    {
+                        "id": "f974ab8d-7162-4cc9-bec1-201b7cfe379e",
+                        "categoria": "Alimentacion",
+                        "monto": 100000.0,
+                        "descripcion": "Grano",
+                        "fecha": "2025-11-22 23:08:05"
+                    },
+                    {
+                        "id": "4d729883-61f3-43dc-a3d3-b09170985d3f",
+                        "categoria": "Alimentacion",
+                        "monto": 150000.0,
+                        "descripcion": "Otros",
+                        "fecha": "2025-11-22 23:08:49"
+                    }
+                ],
+                "nombre": "Alimentacion"
+            },
+            "transporte": {
+                "presupuestoInicial": 100000.0,
+                "saldoRestante": 0.0,
+                "gastos": 100000.0,
+                "movimientos": [
+                    {
+                        "id": "e022eb89-c165-4efa-8c98-068c16abab0b",
+                        "categoria": "Transporte",
+                        "monto": 100000.0,
+                        "descripcion": "Recarga cívica",
+                        "fecha": "2025-11-22 23:12:16"
+                    }
+                ],
+                "nombre": "Transporte"
+            },
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
+            },
+            "otros": {
+                "presupuestoInicial": 400000.0,
+                "saldoRestante": 0.0,
+                "gastos": 400000.0,
+                "movimientos": [
+                    {
+                        "id": "6ffb96e8-3f0a-49fe-b9c8-338eebc8406b",
+                        "categoria": "Otros",
+                        "monto": 20000.0,
+                        "descripcion": "Molis",
+                        "fecha": "2025-11-22 23:12:49"
+                    },
+                    {
+                        "id": "d1344176-6534-42bc-9e67-66bc2a94d27c",
+                        "categoria": "Otros",
+                        "monto": 200000.0,
+                        "descripcion": "Guaro y chicles",
+                        "fecha": "2025-11-22 23:13:16"
+                    },
+                    {
+                        "id": "bb7e6b17-9b50-4390-b269-b29033d08e9d",
+                        "categoria": "Otros",
+                        "monto": 180000.0,
+                        "descripcion": "Menuda",
+                        "fecha": "2025-11-22 23:14:02"
+                    }
+                ],
+                "nombre": "Otros"
+            }
+        },
+        "historial": [
+            {
+                "id": "4ddc172d-ea27-4c18-9b78-6c0a879f4424",
+                "categoria": "Alimentacion",
+                "monto": 50000.0,
+                "descripcion": "Verdura",
+                "fecha": "2025-11-22 23:07:33"
+            },
+            {
+                "id": "5cf236b6-177d-499d-8d63-e5833acef8e5",
+                "categoria": "Alimentacion",
+                "monto": 200000.0,
+                "descripcion": "Carne",
+                "fecha": "2025-11-22 23:07:40"
+            },
+            {
+                "id": "f974ab8d-7162-4cc9-bec1-201b7cfe379e",
+                "categoria": "Alimentacion",
+                "monto": 100000.0,
+                "descripcion": "Grano",
+                "fecha": "2025-11-22 23:08:05"
+            },
+            {
+                "id": "4d729883-61f3-43dc-a3d3-b09170985d3f",
+                "categoria": "Alimentacion",
+                "monto": 150000.0,
+                "descripcion": "Otros",
+                "fecha": "2025-11-22 23:08:49"
+            },
+            {
+                "id": "e022eb89-c165-4efa-8c98-068c16abab0b",
+                "categoria": "Transporte",
+                "monto": 100000.0,
+                "descripcion": "Recarga cívica",
+                "fecha": "2025-11-22 23:12:16"
+            },
+            {
+                "id": "6ffb96e8-3f0a-49fe-b9c8-338eebc8406b",
+                "categoria": "Otros",
+                "monto": 20000.0,
+                "descripcion": "Molis",
+                "fecha": "2025-11-22 23:12:49"
+            },
+            {
+                "id": "d1344176-6534-42bc-9e67-66bc2a94d27c",
+                "categoria": "Otros",
+                "monto": 200000.0,
+                "descripcion": "Guaro y chicles",
+                "fecha": "2025-11-22 23:13:16"
+            },
+            {
+                "id": "bb7e6b17-9b50-4390-b269-b29033d08e9d",
+                "categoria": "Otros",
+                "monto": 180000.0,
+                "descripcion": "Menuda",
+                "fecha": "2025-11-22 23:14:02"
+            }
+        ],
+        "categorias_arbol": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 500000.0,
+                    "gastos": 500000.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [
+                        {
+                            "id": "4ddc172d-ea27-4c18-9b78-6c0a879f4424",
+                            "categoria": "Alimentacion",
+                            "monto": 50000.0,
+                            "descripcion": "Verdura",
+                            "fecha": "2025-11-22 23:07:33"
+                        },
+                        {
+                            "id": "5cf236b6-177d-499d-8d63-e5833acef8e5",
+                            "categoria": "Alimentacion",
+                            "monto": 200000.0,
+                            "descripcion": "Carne",
+                            "fecha": "2025-11-22 23:07:40"
+                        },
+                        {
+                            "id": "f974ab8d-7162-4cc9-bec1-201b7cfe379e",
+                            "categoria": "Alimentacion",
+                            "monto": 100000.0,
+                            "descripcion": "Grano",
+                            "fecha": "2025-11-22 23:08:05"
+                        },
+                        {
+                            "id": "4d729883-61f3-43dc-a3d3-b09170985d3f",
+                            "categoria": "Alimentacion",
+                            "monto": 150000.0,
+                            "descripcion": "Otros",
+                            "fecha": "2025-11-22 23:08:49"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 500000.0,
+                    "total_presupuesto_recursive": 500000.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 100000.0,
+                    "gastos": 100000.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [
+                        {
+                            "id": "e022eb89-c165-4efa-8c98-068c16abab0b",
+                            "categoria": "Transporte",
+                            "monto": 100000.0,
+                            "descripcion": "Recarga cívica",
+                            "fecha": "2025-11-22 23:12:16"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 100000.0,
+                    "total_presupuesto_recursive": 100000.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 400000.0,
+                    "gastos": 400000.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [
+                        {
+                            "id": "6ffb96e8-3f0a-49fe-b9c8-338eebc8406b",
+                            "categoria": "Otros",
+                            "monto": 20000.0,
+                            "descripcion": "Molis",
+                            "fecha": "2025-11-22 23:12:49"
+                        },
+                        {
+                            "id": "d1344176-6534-42bc-9e67-66bc2a94d27c",
+                            "categoria": "Otros",
+                            "monto": 200000.0,
+                            "descripcion": "Guaro y chicles",
+                            "fecha": "2025-11-22 23:13:16"
+                        },
+                        {
+                            "id": "bb7e6b17-9b50-4390-b269-b29033d08e9d",
+                            "categoria": "Otros",
+                            "monto": 180000.0,
+                            "descripcion": "Menuda",
+                            "fecha": "2025-11-22 23:14:02"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 400000.0,
+                    "total_presupuesto_recursive": 400000.0
+                }
+            ],
+            "total_gastos_recursive": 1000000.0,
+            "total_presupuesto_recursive": 1000000.0
+        },
+        "ArbolGeneral": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 500000.0,
+                    "gastos": 500000.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [
+                        {
+                            "id": "4ddc172d-ea27-4c18-9b78-6c0a879f4424",
+                            "categoria": "Alimentacion",
+                            "monto": 50000.0,
+                            "descripcion": "Verdura",
+                            "fecha": "2025-11-22 23:07:33"
+                        },
+                        {
+                            "id": "5cf236b6-177d-499d-8d63-e5833acef8e5",
+                            "categoria": "Alimentacion",
+                            "monto": 200000.0,
+                            "descripcion": "Carne",
+                            "fecha": "2025-11-22 23:07:40"
+                        },
+                        {
+                            "id": "f974ab8d-7162-4cc9-bec1-201b7cfe379e",
+                            "categoria": "Alimentacion",
+                            "monto": 100000.0,
+                            "descripcion": "Grano",
+                            "fecha": "2025-11-22 23:08:05"
+                        },
+                        {
+                            "id": "4d729883-61f3-43dc-a3d3-b09170985d3f",
+                            "categoria": "Alimentacion",
+                            "monto": 150000.0,
+                            "descripcion": "Otros",
+                            "fecha": "2025-11-22 23:08:49"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 500000.0,
+                    "total_presupuesto_recursive": 500000.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 100000.0,
+                    "gastos": 100000.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [
+                        {
+                            "id": "e022eb89-c165-4efa-8c98-068c16abab0b",
+                            "categoria": "Transporte",
+                            "monto": 100000.0,
+                            "descripcion": "Recarga cívica",
+                            "fecha": "2025-11-22 23:12:16"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 100000.0,
+                    "total_presupuesto_recursive": 100000.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 400000.0,
+                    "gastos": 400000.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [
+                        {
+                            "id": "6ffb96e8-3f0a-49fe-b9c8-338eebc8406b",
+                            "categoria": "Otros",
+                            "monto": 20000.0,
+                            "descripcion": "Molis",
+                            "fecha": "2025-11-22 23:12:49"
+                        },
+                        {
+                            "id": "d1344176-6534-42bc-9e67-66bc2a94d27c",
+                            "categoria": "Otros",
+                            "monto": 200000.0,
+                            "descripcion": "Guaro y chicles",
+                            "fecha": "2025-11-22 23:13:16"
+                        },
+                        {
+                            "id": "bb7e6b17-9b50-4390-b269-b29033d08e9d",
+                            "categoria": "Otros",
+                            "monto": 180000.0,
+                            "descripcion": "Menuda",
+                            "fecha": "2025-11-22 23:14:02"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 400000.0,
+                    "total_presupuesto_recursive": 400000.0
+                }
+            ],
+            "total_gastos_recursive": 1000000.0,
+            "total_presupuesto_recursive": 1000000.0
+        },
+        "alertas": [
+            "Alerta: Ha gastado el 100.00% de su ingreso mensual.",
+            "Alerta: Ha gastado el 100.00% del presupuesto asignado para la categoría Alimentación.",
+            "Alerta: Ha gastado el 100.00% del presupuesto asignado para la categoría Transporte.",
+            "Alerta: Ha gastado el 100.00% del presupuesto asignado para la categoría Otros."
+        ]
+    },
+    {
+        "nombre": "Geronimo Valderrama",
+        "email": "geronimo@example.com",
+        "password_hash": "$2b$12$9iAK4Z21uv5fVyepTNlY6uXb9/VuhaywPhHwQVFt2bQE44GOKtZzy",
+        "ingreso_mensual": 1620000.0,
+        "saldoRestante": 1620000.0,
+        "gastosMensuales": 0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Alimentacion"
+            },
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
+            },
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
+            },
+            "otros": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Otros"
+            }
+        },
+        "historial": [],
+        "categorias_arbol": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                }
+            ],
+            "total_gastos_recursive": 0.0,
+            "total_presupuesto_recursive": 0.0
+        },
+        "ArbolGeneral": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                }
+            ],
+            "total_gastos_recursive": 0.0,
+            "total_presupuesto_recursive": 0.0
         },
         "alertas": []
     }

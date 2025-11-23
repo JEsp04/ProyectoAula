@@ -43,7 +43,7 @@ const RegisterForm = () => {
      <button 
         type="submit"
         className="bg-[#4F46E5] text-white py-2 px-4 rounded w-full hover:bg-blue-600 transition-colors duration-300 disabled:bg-gray-400"
-        disabled={loading} // 6. Deshabilitar el botón mientras carga
+        disabled={loading} 
       >
         {loading ? "Registrando..." : "Registrarse"}
       </button>

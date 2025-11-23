@@ -1,13 +1,18 @@
 from fastapi import FastAPI, HTTPException
 from backend.storage.storage import cargar_usuarios, guardar_usuarios
 from backend.controllers.usuario_controller import UsuarioController
-from backend.schemas.usuario_schema import UsuarioCreate, UsuarioLogin, PresupuestoAsignar, GastoRegistrar
+from backend.schemas.usuario_schema import (
+    UsuarioCreate,
+    UsuarioLogin,
+    PresupuestoAsignar,
+    GastoRegistrar,
+)
 
 from fastapi.middleware.cors import CORSMiddleware
 import jwt
 from datetime import datetime, timedelta
 
-SECRET_KEY = "4775a934038fca912d87691f6e73f87852b24e7d18627c25a48a89c670407d97" 
+SECRET_KEY = "4775a934038fca912d87691f6e73f87852b24e7d18627c25a48a89c670407d97"
 ALGORITHM = "HS256"
 
 app = FastAPI(title="Gestor de Presupuestos - Proyecto Aula")
@@ -44,53 +49,55 @@ def get_usuario(email: str):
 @app.post("/api/usuarios/register")
 def post_usuario(data: UsuarioCreate):
     try:
+        print(f"[API] POST /api/usuarios/register payload: {data}")
         existente = ctrl.buscar_por_email(data.email)
         if existente:
             raise HTTPException(status_code=400, detail="El correo ya está registrado")
-        
+
         nuevo = ctrl.crear_usuario(
             nombre=data.nombre,
             email=data.email,
             ingreso=data.ingreso_mensual,
-            password=data.password
+            password=data.password,
         )
         guardar_usuarios(ctrl.usuarios)
-        token = jwt.encode({
-            "email": nuevo.email,
-            "exp": datetime.utcnow() + timedelta(hours=24)
-        },
-        SECRET_KEY,
-        algorithm=ALGORITHM
+        token = jwt.encode(
+            {"email": nuevo.email, "exp": datetime.utcnow() + timedelta(hours=24)},
+            SECRET_KEY,
+            algorithm=ALGORITHM,
         )
-        return {"message": "Usuario creado exitosamente", 
-                "usuario": nuevo.obtener_resumen(),
-                "token": token
+        return {
+            "message": "Usuario creado exitosamente",
+            "usuario": nuevo.obtener_resumen(),
+            "token": token,
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 @app.post("/api/usuarios/login")
 def login(data: UsuarioLogin):
     try:
+        print(f"[API] POST /api/usuarios/login payload: {data}")
         usuario = ctrl.buscar_por_email(data.email)
         if not usuario or not usuario.check_password(data.password):
             raise HTTPException(status_code=401, detail="Credenciales incorrectas")
 
-        token = jwt.encode({
-            "email": usuario.email,
-            "exp": datetime.utcnow() + timedelta(hours=24)
-        },
-        SECRET_KEY,
-        algorithm=ALGORITHM
+        token = jwt.encode(
+            {"email": usuario.email, "exp": datetime.utcnow() + timedelta(hours=24)},
+            SECRET_KEY,
+            algorithm=ALGORITHM,
         )
-        
-        return {"message": "Inicio de sesión exitoso", 
-                "usuario": usuario.obtener_resumen(),
-                "token": token
-                }
+
+        return {
+            "message": "Inicio de sesión exitoso",
+            "usuario": usuario.obtener_resumen(),
+            "token": token,
+        }
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @app.post("/api/usuarios/{email}/presupuesto")
 def asignar_presupuesto(email: str, data: PresupuestoAsignar):
@@ -105,11 +112,14 @@ def asignar_presupuesto(email: str, data: PresupuestoAsignar):
         "alimentacion": usuario.alimentacion,
         "transporte": usuario.transporte,
         "hogar": usuario.hogar,
-        "otros": usuario.otros
+        "otros": usuario.otros,
     }
 
     if categoria not in categorias_validas:
-        raise HTTPException(status_code=400, detail="Categoría no válida. Usa: Alimentacion, Transporte, Hogar u Otros.")
+        raise HTTPException(
+            status_code=400,
+            detail="Categoría no válida. Usa: Alimentacion, Transporte, Hogar u Otros.",
+        )
 
     try:
         # Asigna el presupuesto
@@ -117,11 +127,12 @@ def asignar_presupuesto(email: str, data: PresupuestoAsignar):
         guardar_usuarios(ctrl.usuarios)
         return {
             "message": f"Presupuesto asignado correctamente a {data.categoria}",
-            "usuario": usuario.obtener_resumen()
+            "usuario": usuario.obtener_resumen(),
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
+
+
 @app.post("/api/usuarios/{email}/gasto")
 def registrar_gasto(email: str, data: GastoRegistrar):
     """Registra un gasto en una categoría específica del usuario"""
@@ -134,15 +145,19 @@ def registrar_gasto(email: str, data: GastoRegistrar):
         "alimentacion": usuario.alimentacion,
         "transporte": usuario.transporte,
         "hogar": usuario.hogar,
-        "otros": usuario.otros
+        "otros": usuario.otros,
     }
 
     if categoria_nombre not in categorias_validas:
-        raise HTTPException(status_code=400, detail="Categoría no válida. Usa: Alimentacion, Transporte, Hogar u Otros.")
+        raise HTTPException(
+            status_code=400,
+            detail="Categoría no válida. Usa: Alimentacion, Transporte, Hogar u Otros.",
+        )
 
     categoria = categorias_validas[categoria_nombre]
 
     try:
+        print(f"[API] POST /api/usuarios/{email}/gasto payload: {data}")
         movimiento = usuario.registrar_gasto(categoria, data.monto, data.descripcion)
         guardar_usuarios(ctrl.usuarios)
         return {
@@ -151,7 +166,8 @@ def registrar_gasto(email: str, data: GastoRegistrar):
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
+
+
 @app.delete("/api/usuarios/{email}/gasto/{id}")
 def eliminar_gasto(email: str, id: str):
     """Elimina un gasto del historial del usuario. El id del gasto puede ser string (uuid)."""
@@ -171,12 +187,8 @@ def eliminar_gasto(email: str, id: str):
             raise HTTPException(status_code=404, detail="Gasto no encontrado")
 
         guardar_usuarios(ctrl.usuarios)
-        return {
-            "message": "Gasto eliminado correctamente",
-            "movimiento": movimiento
-        }
+        return {"message": "Gasto eliminado correctamente", "movimiento": movimiento}
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-    

@@ -18,7 +18,9 @@ export const registerUser = async (data) => {
   };
 
   try {
+    console.log("authService.registerUser -> sending payload:", payload);
     const res = await api.post("/usuarios/register", payload);
+    console.log("authService.registerUser -> response:", res && res.data);
     return res.data;
   } catch (err) {
     throw err; 
