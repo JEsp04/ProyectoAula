@@ -120,8 +120,10 @@ export const useAuthStore = create((set) => ({
 
   register: async (data) => {
     set({ loading: true, error: null });
+    console.log("useAuthStore.register -> start", data);
     try {
       const res = await registerUser(data);
+      console.log("useAuthStore.register -> registerUser returned", res);
       console.log("[useAuthStore.register] response:", res);
 
       let usuario = res.usuario || res.user || res.data || null;
