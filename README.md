@@ -61,9 +61,11 @@ py -3 -m venv .venv
 source .venv/Scripts/activate   # en Linux/macOS usar: source .venv/bin/activate
 
 # instalar dependencias (ejemplo en Git Bash o bash)
+cd backend
 pip install fastapi uvicorn[standard] bcrypt PyJWT python-dotenv email-validator python-multipart httpx requests passlib[bcrypt] python-jose[cryptography]
 
 # ejecutar backend
+cd .. (en la raiz , no en la carpeta backend)
 uvicorn backend.api:app --reload
 
 # Frontend (Git Bash)
