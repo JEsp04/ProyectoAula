@@ -1,8 +1,11 @@
 from backend.models.usuario import Usuario
 
+
 class UsuarioController:
     def __init__(self):
-        self.usuarios = []  # aquí se mantienen en memoria (luego storage los carga/guarda)
+        self.usuarios = (
+            []
+        )  # aquí se mantienen en memoria (luego storage los carga/guarda)
 
     def listar_usuarios(self):
         """Retorna la lista completa de usuarios"""
@@ -18,7 +21,7 @@ class UsuarioController:
 
     def crear_usuario(self, nombre: str, email: str, ingreso: float, password: str):
         """Crea un nuevo usuario si no existe otro con el mismo email"""
-        
+
         # Validar ingreso positivo
         if ingreso <= 0:
             raise Exception("El ingreso mensual debe ser mayor a cero.")
@@ -53,7 +56,7 @@ class UsuarioController:
         usuario = self.buscar_por_email(email)
         if not usuario:
             raise Exception("Usuario no encontrado.")
-        
+
         if nuevo_ingreso <= 0:
             raise Exception("El ingreso mensual debe ser mayor a cero.")
 
@@ -74,3 +77,53 @@ class UsuarioController:
             return usuario
         else:
             raise Exception(f"Categoría '{categoria_nombre}' no válida.")
+
+    def reset_usuario(self, email: str):
+        """Resetea gastos, presupuestos, historiales y montos relacionados a 0
+        Conserva únicamente el `ingreso_mensual` y el `email`/`nombre`.
+        Devuelve el usuario modificado o None si no existe.
+        """
+        usuario = self.buscar_por_email(email)
+        if not usuario:
+            return None
+
+        # Resetear totales del usuario
+        try:
+            usuario.gastosMensuales = 0
+        except Exception:
+            usuario.gastosMensuales = 0
+
+        try:
+            usuario.saldoRestante = usuario.ingreso_mensual
+        except Exception:
+            usuario.saldoRestante = usuario.ingreso_mensual
+
+        # Limpiar historial
+        usuario.historial = []
+
+        # Resetear cada categoría: presupuesto, gastos, saldo y movimientos
+        for cat_attr in ("alimentacion", "transporte", "hogar", "otros"):
+            try:
+                cat = getattr(usuario, cat_attr, None)
+                if cat is None:
+                    continue
+                # establecer presupuestos y gastos a 0
+                if hasattr(cat, "presupuestoInicial"):
+                    cat.presupuestoInicial = 0
+                if hasattr(cat, "gastos"):
+                    cat.gastos = 0
+                if hasattr(cat, "saldoRestante"):
+                    cat.saldoRestante = 0
+                if hasattr(cat, "movimientos"):
+                    cat.movimientos = []
+            except Exception:
+                # ignorar errores y continuar con otras categorias
+                continue
+
+        # Resetear árbol y alertas guardadas
+        try:
+            usuario.ArbolGeneral = {}
+        except Exception:
+            usuario.ArbolGeneral = {}
+
+        return usuario

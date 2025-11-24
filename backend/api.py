@@ -192,3 +192,22 @@ def eliminar_gasto(email: str, id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/usuarios/{email}/reset")
+def reset_usuario(email: str):
+    """Endpoint para resetear gastos/asignaciones/historial del usuario.
+    Conserva `ingreso_mensual`.
+    """
+    usuario = ctrl.reset_usuario(email)
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    try:
+        guardar_usuarios(ctrl.usuarios)
+        return {
+            "message": "Datos del usuario reseteados correctamente",
+            "usuario": usuario.obtener_resumen(),
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

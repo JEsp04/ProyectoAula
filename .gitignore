@@ -1,0 +1,57 @@
+# Node
+node_modules/
+dist/
+
+# Environment files
+.env
+.env.*.local
+
+# Python virtual envs
+.venv/
+venv/
+env/
+
+# Byte-compiled / caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.cache/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# IDEs / editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+*.db-journal
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+
+# Misc
+coverage.xml
+*.pem
+*.key
+
+# Optional: data or config files with sensitive info (uncomment if needed)
+# usuarios.json
+# backend/secret_config.json
+

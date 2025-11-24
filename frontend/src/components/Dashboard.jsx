@@ -2,6 +2,8 @@ import { useState, useMemo } from "react";
 import { CATEGORIAS } from "../utils/categorias";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import CategoryTree from "./CategoryTree";
+import { resetUserData, obtenerUsuarioPorEmail } from "../services/userService";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function Dashboard({
   gastos = [],
@@ -52,11 +54,81 @@ export default function Dashboard({
     }
   };
 
+  const handleResetAll = async () => {
+    const ok = window.confirm(
+      "¿Seguro que quieres resetear asignaciones y gastos a 0? Se conservará el ingreso mensual."
+    );
+    if (!ok) return;
+
+    try {
+      // obtener email desde el store de autenticación (fallback a localStorage.user)
+      const storeUser = useAuthStore.getState().user;
+      let usuarioEmail = storeUser?.email || null;
+      if (!usuarioEmail) {
+        const raw = window.localStorage.getItem("user");
+        try {
+          const parsed = raw ? JSON.parse(raw) : null;
+          usuarioEmail = parsed?.email || null;
+        } catch (e) {
+          usuarioEmail = null;
+        }
+      }
+
+      if (!usuarioEmail) {
+        alert("No se pudo determinar el usuario. Asegúrate de estar logueado.");
+        return;
+      }
+
+      const resp = await resetUserData(usuarioEmail);
+
+      // Si el backend devuelve el usuario actualizado, actualizamos el store/localStorage
+      const updatedUser = resp?.usuario || resp?.user || resp?.data || null;
+      if (updatedUser) {
+        // actualizar el store (updateUser guarda en localStorage y resync)
+        try {
+          useAuthStore.getState().updateUser(updatedUser);
+        } catch (e) {
+          console.warn("No se pudo actualizar el store directamente:", e);
+          // fallback: intentar obtener usuario desde backend
+          try {
+            const full = await obtenerUsuarioPorEmail(usuarioEmail);
+            if (full) useAuthStore.getState().updateUser(full);
+          } catch (ee) {
+            console.warn(
+              "Fallback: no se pudo obtener usuario tras reset:",
+              ee
+            );
+          }
+        }
+      } else {
+        // Si el reset no devolvió el usuario, pedirlo al backend para sincronizar
+        try {
+          const full = await obtenerUsuarioPorEmail(usuarioEmail);
+          if (full) useAuthStore.getState().updateUser(full);
+        } catch (e) {
+          console.warn("No se pudo obtener usuario tras reset:", e);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error al resetear datos: " + (err.message || err));
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 p-6 shadow-lg rounded-lg transition-colors duration-300">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
         Resumen Financiero
       </h2>
+
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={handleResetAll}
+          className="text-sm px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
+        >
+          Resetear asignaciones / gastos
+        </button>
+      </div>
 
       {/* RESUMEN GENERAL */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 border-b dark:border-gray-700 pb-6">
@@ -143,7 +215,11 @@ export default function Dashboard({
           };
 
           // Fallback: si el nodo no trae movimientos, rellenarlos desde el listado plano `gastos`
-          if (!nodoFinal || !Array.isArray(nodoFinal.movimientos) || nodoFinal.movimientos.length === 0) {
+          if (
+            !nodoFinal ||
+            !Array.isArray(nodoFinal.movimientos) ||
+            nodoFinal.movimientos.length === 0
+          ) {
             const movimientosFromGastos = gastos
               .filter((g) => normalize(g.categoria) === catNorm)
               .map((m) => ({

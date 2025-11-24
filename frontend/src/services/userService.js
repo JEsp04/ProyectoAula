@@ -20,3 +20,13 @@ export const updateUserIncome = async (email, income) => {
     throw error;
   }
 };
+
+export const resetUserData = async (email) => {
+  try {
+    const response = await api.post(`/usuarios/${encodeURIComponent(email)}/reset`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al resetear datos de usuario:", error.response?.data || error.message);
+    throw error;
+  }
+};

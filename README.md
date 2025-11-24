@@ -1,199 +1,263 @@
-Proyecto Aula — Sistema de Gastos Personales
-Descripción
-Aplicación de consola para gestionar ingresos y gastos mensuales por categorías, con persistencia en JSON y alertas al alcanzar umbrales de presupuesto del 80% y 90%. El objetivo del checkpoint 1 es demostrar dominio de estructuras de datos básicas, modularidad y pruebas unitarias con pytest.
+# SmartBudget — Proyecto Aula
 
-Casos de uso — MVP
+## Resumen corto
 
-Crear usuario
+SmartBudget es una aplicación educativa de gestión de presupuesto personal. Incluye un backend en Python (FastAPI) que persiste usuarios en `usuarios.json` y un frontend en React (Vite) que consume la API. El sistema usa estructuras de datos como árboles de categorías, diccionarios y listas, y aplica recursión para construir/recorrer el árbol de categorías.
 
-Descripción: Registrar un nuevo usuario con nombre y ingreso mensual.
-Criterios de aceptación: Se crea objeto Usuario con nombre e ingreso; aparece en la colección en memoria.
+Contenido de este README
 
-Asignar presupuesto por categoría
+- Descripción y objetivo
+- Cómo ejecutar el proyecto (backend y frontend)
+- Estructura del repositorio
+- Estructuras de datos y algoritmos (árboles, recursión, diccionarios)
+- Endpoints principales de la API
+- Notas de seguridad y recomendaciones
+- Comandos útiles y tests
 
-Descripción: Definir o actualizar el presupuesto mensual para una categoría (Alimentación, Transporte, Hogar, Otros).
-Criterios de aceptación: El presupuesto se guarda y afecta el cálculo de saldo restante.
+## Descripción y objetivo
 
-Registrar gasto
+El objetivo del proyecto es proporcionar una aplicación ligera para organizar ingresos, asignar presupuestos por categoría y registrar gastos. La app mantiene un histórico de movimientos y calcula alertas cuando se supera cierto umbral.
 
-Descripción: Añadir un gasto a una categoría con monto y descripción.
-Criterios de aceptación: El gasto se incluye en la lista de movimientos de la categoría; totales y saldo se actualizan.
+## Ejecución (desarrollo)
 
-Ver resumen de usuario
+Requisitos previos
 
-Descripción: Mostrar resumen con ingreso, presupuestos por categoría, gastos acumulados y saldos.
-Criterios de aceptación: Resumen devuelve datos coherentes por categoría y totales.
+- Python 3.10+ (se probó con Python 3.11+)
+- Node.js + npm (para el frontend)
 
-Alertas por umbral de gasto
+Backend (Windows - PowerShell)
 
-Descripción: Emitir señal/indicador cuando gasto en una categoría alcanza 80% y 90% del presupuesto.
-Criterios de aceptación: Se detecta y reporta (ej. flag o mensaje) al alcanzar cada umbral.
+1. Abrir PowerShell en la carpeta del proyecto (donde está `backend/` y `usuarios.json`):
 
-Guardar usuarios
+```powershell
+cd "c:\Users\Valderrama\documents\SmartBuget\ProyectoAula"
+# (opcional) crear y activar un venv
+py -3 -m venv .venv
+.venv\Scripts\Activate.ps1
 
-Descripción: Serializar usuarios y sus movimientos a JSON.
-Criterios de aceptación: Archivo JSON creado/actualizado con la información esperada.
+# instalar dependencias mínimas
+pip install fastapi uvicorn[standard] bcrypt PyJWT python-dotenv email-validator python-multipart httpx requests passlib[bcrypt] python-jose[cryptography]
 
-Cargar usuarios 
+# ejecutar el servidor
+py -3 -m uvicorn backend.api:app --reload
+```
 
-Descripción: Reconstruir usuarios desde archivo JSON al iniciar la aplicación.
-Criterios de aceptación: Usuarios, presupuestos y movimientos se restauran correctamente; archivo inexistente → lista vacía.
+Frontend (Windows)
 
+```powershell
+cd frontend
+npm install
+npm run dev
+# abre http://localhost:5173 (o el puerto que indique Vite)
+```
 
-Deshacer último gasto
+## Git Bash / Linux / macOS (equivalente)
 
-Descripción: Eliminar o revertir el gasto más reciente en una categoría.
-Criterios de aceptación: Último movimiento removido y totales actualizados.
+```bash
+# Ir a la raíz del proyecto
+cd /c/Users/Valderrama/documents/SmartBuget/ProyectoAula
+# crear y activar venv (en Git Bash sobre Windows puede ser necesario usar 'source')
+py -3 -m venv .venv
+source .venv/Scripts/activate   # en Linux/macOS usar: source .venv/bin/activate
 
-Listar usuarios
+# instalar dependencias (ejemplo en Git Bash o bash)
+pip install fastapi uvicorn[standard] bcrypt PyJWT python-dotenv email-validator python-multipart httpx requests passlib[bcrypt] python-jose[cryptography]
 
-Descripción: Mostrar la lista de usuarios registrados.
-Criterios de aceptación: Devuelve nombres/identificadores de usuarios disponibles.
+# ejecutar backend
+uvicorn backend.api:app --reload
 
-Eliminar usuario 
+# Frontend (Git Bash)
+cd frontend
+npm install
+npm run dev
+```
 
-Descripción: Eliminar usuario de la colección.
-Criterios de aceptación: Usuario deja de aparecer en listados y JSON actualizado.
+## Estructura del repositorio
 
+Raíz relevante:
 
-Autenticación básica
+El proyecto contiene backend, frontend y tests. A continuación se muestra la estructura de carpetas y archivos tal como está ahora en el repositorio:
 
-Descripción: Mecanismo sencillo para identificar y autorizar usuarios que usan la aplicación. Soporta registro de credenciales (usuario/contraseña) y login. Las contraseñas se almacenan de forma segura (hash) y las operaciones que modifican datos sensibles requieren haber iniciado sesión.
-
-Criterios de aceptación:
-
-Registro: se puede crear un usuario con email único y contraseña. La función retorna éxito y el usuario queda persistido.
-
-Almacenamiento seguro: la contraseña nunca se guarda en texto plano, se usa hashing.
-
-Login: se puede iniciar sesión con email y contraseña; credenciales válidas retornan un token de sesión simple o un indicador de sesión activa.
-
-Autorización: operaciones protegidas (p. ej. registrar gasto, cambiar presupuesto, eliminar usuario) son rechazadas si no hay sesión válida; retornan error/estado 401/403 en la API o mensaje en CLI.
-
-Manejo de errores: login con credenciales incorrectas responde mensaje claro sin revelar si el usuario existe; intentos repetidos pueden limitarse.
-
-Persistencia e invalidación: tokens de sesión se invalidan al cerrar sesión; al reiniciar la aplicación la sesión no se restaura automáticamente sin re-login.
-
-
-Interfaz gráfica + API REST
-
-Descripcion: Añadir una API REST que exponga las operaciones principales (crear/listar usuarios, asignar presupuesto, registrar gasto, ver resumen, persistencia) y una interfaz gráfica que consuma dicha API para interacción amigable.
-
-Criterios de aceptación: 
-Endpoint mínimos y comportamientos.
-
-Seguridad: 
-Validacion de entrada.
-No exponer contraseñas.
-
-Interfaz gráfica:
-Formulario para asignar presupuesto.
-Interfaz consume la API y muestra mensajes de error/éxito según respuestas.
-Alertas visibles cuando una categoría supera el umbral de gasto.
-
-Objetivos
-Registrar, consultar y acumular gastos por categoría.
-
-Asignar y actualizar presupuestos por categoría con cálculo de saldo restante.
-
-Guardar y cargar usuarios y sus movimientos en un archivo JSON legible.
-
-Emitir alertas cuando el gasto alcanza el 80% o el 90% del presupuesto mensual.
-
-Estructura
+```
+README.md
+usuarios.json
 backend/
+	__init__.py
+	api.py
+	controllers/
+		__init__.py
+		categoria_controller.py
+		usuario_controller.py
+	models/
+		__init__.py
+		categorias.py
+		category_node.py
+		usuario.py
+	schemas/
+		usuario_schema.py
+	storage/
+		storage.py
+	__pycache__/
 
-categorias.py: clases de dominio para categorías (Alimentacion, Transporte, Hogar, Otros) y atributos de presupuesto, saldo, gastos y movimientos.
-
-usuario/: modelo de Usuario y operaciones de negocio (asignar presupuesto, registrar gasto, obtener resumen).
-
-storage.py: utilidades de persistencia para guardar_usuarios y cargar_usuarios con JSON.
-
-menu.py y main.py: flujo interactivo por consola.
+frontend/
+	.gitignore
+	eslint.config.js
+	index.html
+	package.json
+	README.md
+	vite.config.js
+	src/
+		App.css
+		App.jsx
+		index.css
+		main.jsx
+		components/
+			CategoryTree.jsx
+			Dashboard.jsx
+			GastoForm.jsx
+			LoginForm.jsx
+			Navbar.jsx
+			Notificacion.jsx
+			PresupuestoForm.jsx
+			RegisterForm.jsx
+		pages/
+			FinanzasPage.jsx
+			HomePage.jsx
+			LoginPage.jsx
+			RegisterPage.jsx
+		services/
+			api.js
+			authService.js
+			categoriaService.js
+			expenseService.js
+			userService.js
+		store/
+			useAuthStore.js
+			useExpenseStore.js
+		utils/
+			categorias.js
 
 tests/
+	conftest.py
+	test_categorias.py
+	test_smoke.py
+	test_storage.py
+	test_trees.py
+	test_usuario_crud.py
+	__pycache__/
 
-conftest.py: fixtures y configuración de ruta del proyecto para pytest.
+```
 
-test_smoke.py: verificación básica del entorno de pruebas.
+## Uso de IA en el proyecto
 
-test_categorias.py: acumulados y alertas por umbrales.
+Durante el desarrollo de este proyecto se usaron herramientas de asistencia por IA para acelerar tareas de diseño y generación de código . En particular, se empleó IA para ayudar a crear y estructurar archivos bajo `backend/schemas/` (por ejemplo `usuario_schema.py`) y para reforzar partes de la lógica de LAS Pruebas Unitarias, tambien se implemento la IA Para ayudas en el services, como `userService.js`.
 
-test_storage.py: round‑trip de guardado/carga con JSON.
+## Estructuras de datos y algoritmos
 
-test_usuario_crud.py: lectura de resumen, actualización de presupuesto por categoría y eliminación en una colección simulada.
+1. Usuario (clase)
 
-Requisitos
-Python 3.10 o superior.
+- Representa al usuario y contiene atributos numéricos (ingreso_mensual, saldoRestante, gastosMensuales), objetos de categoría y un `historial` (lista de movimientos).
 
-Entorno virtual recomendado (venv).
+2. Categorías (objetos planos)
 
-pytest para ejecutar pruebas.
+- Cada categoría (Alimentación, Transporte, Hogar, Otros) se modela como objeto con propiedades como `presupuestoInicial`, `gastos`, `saldoRestante` y `movimientos` (lista).
 
-Instalación
-Crear y activar entorno virtual en la raíz del repo:
+3. Árbol de categorías (CategoryNode)
 
-<img width="742" height="89" alt="image" src="https://github.com/user-attachments/assets/91b7ecb3-c38f-4b17-838e-001bdb7a62c1" />
+- Para mostrar una representación jerárquica, se construye un árbol con `CategoryNode`.
+- Implementación: la clase `Usuario.build_category_tree()` crea un nodo raíz y añade los nodos hijos para cada categoría.
+- Uso de recursión: el método `to_dict()` de `CategoryNode` (y cualquier recorrido del árbol) puede implementar recursión para serializar hijos anidados.
 
+Ejemplo (simplificado) de árbol en JSON:
 
+```json
+{
+  "name": "Categorias",
+  "children": [
+    {
+      "name": "Alimentacion",
+      "presupuesto": 1000,
+      "gastos": 200,
+      "children": []
+    },
+    { "name": "Transporte", "presupuesto": 0, "gastos": 0, "children": [] }
+  ]
+}
+```
 
-<img width="751" height="100" alt="image" src="https://github.com/user-attachments/assets/edffd945-efc1-4d50-ab59-450a595e7412" />
+4. Diccionarios y listas
 
-Ejecución
-Iniciar la aplicación por consola:
+- Internamente se usan `dict` para mapear atributos de usuarios/categorías y `list` para movimientos. Al guardar en `usuarios.json`, se serializa una lista de usuarios (cada usuario es un diccionario).
 
-<img width="740" height="70" alt="image" src="https://github.com/user-attachments/assets/062003a1-9fa1-433b-9c18-5a89bbb505b6" />
+Algoritmos clave
 
-Seguir el menú para:
+- Registro de gasto (`Usuario.registrar_gasto`): valida el monto frente al `saldoRestante` de la categoría, ajusta totales y añade un movimiento a la lista `historial` y a `categoria.movimientos`.
+- Eliminación de gasto con restauración de totales (`eliminar_gasto_por_id`): busca el movimiento por `id`, revierte los contadores y elimina la entrada.
+- Construcción del árbol (`build_category_tree`): crea nodos y devuelve una estructura recursiva. Esto facilita mostrar la jerarquía en el frontend.
 
-Crear usuario y definir ingreso mensual.
+- Listas (`list` en Python) para `historial` y `movimientos` — estas listas pueden comportarse como pilas si se usan `append()`/`pop()`.
+- Arrays/listas en el frontend (JS) que usan `push()`/`pop()` para manipular movimientos.
+- Diccionarios (`dict`) para mapear categorías y atributos.
 
-Asignar presupuestos por categoría.
+API (endpoints principales)
+Nota: la API expone rutas bajo `/api` según `backend/api.py`.
 
-Registrar gastos con descripción.
+- GET `/api` — health check
+- GET `/api/usuarios/ObtenerTodos` — devuelve resumen de todos los usuarios
+- GET `/api/usuarios/ObtenerPor/{email}` — devuelve resumen de usuario por email
+- POST `/api/usuarios/register` — registro (devuelve token JWT y usuario)
+- POST `/api/usuarios/login` — login (devuelve token JWT y usuario)
+- POST `/api/usuarios/{email}/presupuesto` — asignar presupuesto a categoría
+- POST `/api/usuarios/{email}/gasto` — registrar gasto en categoría
+- DELETE `/api/usuarios/{email}/gasto/{id}` — eliminar gasto por id
+- POST `/api/usuarios/{email}/reset` — endpoint agregado: resetea presupuestos/gastos/historial para el usuario (preserva `ingreso_mensual`)
 
-Ver resumen y saldo restante.
+Ejemplo de llamada (curl / PowerShell):
 
-Deshacer último gasto (si se usa esa opción del menú).
+```powershell
+# Login
+curl -X POST "http://127.0.0.1:8000/api/usuarios/login" -H "Content-Type: application/json" -d '{"email":"tu@mail.com","password":"tuPass"}'
 
-Datos y persistencia
-Archivo por defecto: usuarios.json en la raíz del proyecto.
+# Reset usuario (reemplaza email)
+curl -X POST "http://127.0.0.1:8000/api/usuarios/tu_email%40dominio.com/reset"
+```
 
-guardar_usuarios: serializa la información clave del Usuario (ingreso, categorías, presupuestos y movimientos).
+Frontend
 
-cargar_usuarios: reconstruye usuarios y sus categorías y vuelve a aplicar los movimientos.
+- `frontend` usa React + Vite. La comunicación con la API se realiza con Axios en `src/services/api.js` (baseURL: `http://localhost:8000/api`).
+- El componente `Dashboard.jsx` incluye un botón para resetear asignaciones/gastos que llama al endpoint `/reset` y actualiza el store (`useAuthStore`) para sincronizar `localStorage`.
 
-Pruebas unitarias (pytest)
-Ejecutar toda la suite:
+Testing
 
+- Hay una carpeta `tests/` con pruebas pytest. Para ejecutar tests (si tienes pytest instalado):
 
-<img width="751" height="71" alt="image" src="https://github.com/user-attachments/assets/f6debf4d-5f85-41b9-8178-89ad1040c3e0" />
+```powershell
+py -3 -m pytest -q
+```
 
-Ejecutar por archivo o patrón:
+Diagrama de clases (resumen textual)
 
+```text
+Usuario
+	- nombre: str
+	- email: str
+	- ingreso_mensual: float
+	- saldoRestante: float
+	- gastosMensuales: float
+	- password_hash: str
+	- alimentacion, transporte, hogar, otros: Categoria
+	- historial: list[Movimiento]
 
-<img width="750" height="96" alt="image" src="https://github.com/user-attachments/assets/a3a34f41-4451-47de-9ec5-2d662aaefb8c" />
+Categoria
+	- nombre: str
+	- presupuestoInicial: float
+	- gastos: float
+	- saldoRestante: float
+	- movimientos: list[Movimiento]
 
-Qué valida la suite:
-
-test_smoke.py: entorno de pruebas operativo.
-
-test_categorias.py:
-
-Asignar presupuesto y registrar gastos acumulando totales.
-
-Alertas al 80% y 90% del presupuesto por categoría.
-
-test_storage.py:
-
-Crear Usuario real, asignar presupuestos, registrar gasto, guardar a JSON y recargar; comprobar que nombre, ingreso y métricas de categoría persisten coherentemente.
-
-Cargar archivo inexistente retorna lista vacía.
-
-test_usuario_crud.py:
-
-Lectura de resumen para un Usuario inicial.
-
-Actualización de presupuesto de una categoría y verificación en el resumen.
-
-Eliminación lógica del usuario en una colección en memoria.
+CategoryNode
+	- name
+	- presupuesto
+	- gastos
+	- children: list[CategoryNode]
+```

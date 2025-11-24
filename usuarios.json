@@ -725,5 +725,323 @@
             "total_presupuesto_recursive": 0.0
         },
         "alertas": []
+    },
+    {
+        "nombre": "Juan Andres",
+        "email": "juan@example.com",
+        "password_hash": "$2b$12$YOA96j//eGO9hIF01V7lReBkf7MPMOC6o5UD2vt0WgDz5Be0x68hW",
+        "ingreso_mensual": 20000000.0,
+        "saldoRestante": 14000000.0,
+        "gastosMensuales": 5000000.0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 6000000.0,
+                "saldoRestante": 1000000.0,
+                "gastos": 5000000.0,
+                "movimientos": [
+                    {
+                        "id": "0bb7e84f-3da7-4c5c-a313-01bc018c56fd",
+                        "categoria": "Alimentacion",
+                        "monto": 5000000.0,
+                        "descripcion": "Helado Jumbo",
+                        "fecha": "2025-11-23 20:37:30"
+                    }
+                ],
+                "nombre": "Alimentacion"
+            },
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
+            },
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
+            },
+            "otros": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Otros"
+            }
+        },
+        "historial": [
+            {
+                "id": "0bb7e84f-3da7-4c5c-a313-01bc018c56fd",
+                "categoria": "Alimentacion",
+                "monto": 5000000.0,
+                "descripcion": "Helado Jumbo",
+                "fecha": "2025-11-23 20:37:30"
+            }
+        ],
+        "categorias_arbol": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 6000000.0,
+                    "gastos": 5000000.0,
+                    "saldoRestante": 1000000.0,
+                    "movimientos": [
+                        {
+                            "id": "0bb7e84f-3da7-4c5c-a313-01bc018c56fd",
+                            "categoria": "Alimentacion",
+                            "monto": 5000000.0,
+                            "descripcion": "Helado Jumbo",
+                            "fecha": "2025-11-23 20:37:30"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 5000000.0,
+                    "total_presupuesto_recursive": 6000000.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                }
+            ],
+            "total_gastos_recursive": 5000000.0,
+            "total_presupuesto_recursive": 6000000.0
+        },
+        "ArbolGeneral": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 6000000.0,
+                    "gastos": 5000000.0,
+                    "saldoRestante": 1000000.0,
+                    "movimientos": [
+                        {
+                            "id": "0bb7e84f-3da7-4c5c-a313-01bc018c56fd",
+                            "categoria": "Alimentacion",
+                            "monto": 5000000.0,
+                            "descripcion": "Helado Jumbo",
+                            "fecha": "2025-11-23 20:37:30"
+                        }
+                    ],
+                    "children": [],
+                    "total_gastos_recursive": 5000000.0,
+                    "total_presupuesto_recursive": 6000000.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                }
+            ],
+            "total_gastos_recursive": 5000000.0,
+            "total_presupuesto_recursive": 6000000.0
+        },
+        "alertas": [
+            "Alerta: Ha gastado el 83.33% del presupuesto asignado para la categoría Alimentación."
+        ]
+    },
+    {
+        "nombre": "Yasmin Andrea Alvarez Ciro",
+        "email": "andrea@example.com",
+        "password_hash": "$2b$12$5k30QEsjjIlz8XULz7X4WO6r8DKL95yzIyNfPRJOnOZQqdW06eFDK",
+        "ingreso_mensual": 90000000.0,
+        "saldoRestante": 90000000.0,
+        "gastosMensuales": 0,
+        "categorias": {
+            "alimentacion": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Alimentacion"
+            },
+            "transporte": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Transporte"
+            },
+            "hogar": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Hogar"
+            },
+            "otros": {
+                "presupuestoInicial": 0,
+                "saldoRestante": 0,
+                "gastos": 0,
+                "movimientos": [],
+                "nombre": "Otros"
+            }
+        },
+        "historial": [],
+        "categorias_arbol": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                }
+            ],
+            "total_gastos_recursive": 0.0,
+            "total_presupuesto_recursive": 0.0
+        },
+        "ArbolGeneral": {
+            "name": "Categorias",
+            "presupuesto": 0.0,
+            "gastos": 0.0,
+            "saldoRestante": 0.0,
+            "movimientos": [],
+            "children": [
+                {
+                    "name": "Alimentacion",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Transporte",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Hogar",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                },
+                {
+                    "name": "Otros",
+                    "presupuesto": 0.0,
+                    "gastos": 0.0,
+                    "saldoRestante": 0.0,
+                    "movimientos": [],
+                    "children": [],
+                    "total_gastos_recursive": 0.0,
+                    "total_presupuesto_recursive": 0.0
+                }
+            ],
+            "total_gastos_recursive": 0.0,
+            "total_presupuesto_recursive": 0.0
+        },
+        "alertas": []
     }
 ]
